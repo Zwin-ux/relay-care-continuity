@@ -34,6 +34,8 @@ This writes a public-safe run receipt to Supabase. It stores unsafe health claim
 
 This machine has Ollama `0.23.0` available and `gemma4:e2b` is installed. Use `ollama list` in the recording to show the local Gemma model before running the Ollama-mode triage path.
 
+Latest local smoke: on May 7, 2026, `MODEL_MODE=ollama GEMMA_MODEL=gemma4:e2b OLLAMA_TIMEOUT_SECONDS=180` created a triage incident through `/api/triage/run` with `status: ok`.
+
 ## Claim Boundary
 
 The public preview can stay in replay mode. The technical proof should show that the same schema and state path can run from local Gemma through Ollama. Do not present replay mode as live model execution.
