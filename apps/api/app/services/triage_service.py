@@ -37,17 +37,41 @@ async def run_model_for_signal(signal: Signal) -> tuple[str, dict[str, Any], str
         raise HTTPException(400, f"Unsupported MODEL_MODE={mode}")
 
     prompt = (
-        "You are Gemma triage inside RELAY. Return only JSON matching the triage schema. "
-        "Do not give medical treatment advice. Evidence must quote the input when possible.\n\n"
+        "You are Gemma triage inside RELAY Care Continuity. Return only one JSON object. "
+        "Do not include markdown. Do not give medical treatment advice. Treat the input as an unverified source report, not fact. "
+        "If the report asks for medical dosing or unsafe routing, put a short public-safe label in unsafe_claims and conflicts.\n\n"
+        "Required JSON shape:\n"
+        "{\n"
+        '  "incident_type": "vulnerable_person_support | shelter_supply | infrastructure_hazard | information_coordination | volunteer_task",\n'
+        '  "summary": "string phrased as a report",\n'
+        '  "urgency": "low | medium | high | critical",\n'
+        '  "confidence": 0.0,\n'
+        '  "location": {"raw": "string or null", "normalized": "string or null"},\n'
+        '  "affected_groups": ["string"],\n'
+        '  "evidence": [{"type": "text", "quote": "short quote from input", "description": "why it matters", "signal_id": null}],\n'
+        '  "missing_information": ["string"],\n'
+        '  "recommended_next_action": {"action_type": "request_verification", "description": "what to review next"},\n'
+        '  "safety_notes": ["string"],\n'
+        '  "care_domain": "medication | oxygen_power | infant_supply | mobility_transport | hazard_access | public_information | volunteer_capacity | shelter_comfort",\n'
+        '  "required_fields": ["string"],\n'
+        '  "unsafe_claims": ["string"],\n'
+        '  "source_assertions": ["string"],\n'
+        '  "conflicts": ["string"],\n'
+        '  "handoff_status": "blocked_missing_info | blocked_unsafe_claim | ready_for_review"\n'
+        "}\n\n"
         f"Signal source: {signal.source}\nSignal text: {signal.text}\nLocation hint: {signal.location_hint}"
     )
     base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    async with httpx.AsyncClient(timeout=60) as client:
-        response = await client.post(
-            f"{base_url}/api/generate",
-            json={"model": model_name, "prompt": prompt, "stream": False, "format": "json"},
-        )
-        response.raise_for_status()
+    timeout_seconds = float(os.getenv("OLLAMA_TIMEOUT_SECONDS", "180"))
+    try:
+        async with httpx.AsyncClient(timeout=timeout_seconds) as client:
+            response = await client.post(
+                f"{base_url}/api/generate",
+                json={"model": model_name, "prompt": prompt, "stream": False, "format": "json"},
+            )
+            response.raise_for_status()
+    except httpx.HTTPError as exc:
+        raise HTTPException(502, f"Ollama model call failed: {exc}") from exc
     return mode, json.loads(response.json()["response"]), model_name
 
 

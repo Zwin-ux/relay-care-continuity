@@ -6,7 +6,7 @@ Use this for the Kaggle writeup, media gallery, and the technical proof segment 
 
 ```bash
 ollama pull gemma4:e2b
-MODEL_MODE=ollama GEMMA_MODEL=gemma4:e2b OLLAMA_BASE_URL=http://localhost:11434 npm run dev
+MODEL_MODE=ollama GEMMA_MODEL=gemma4:e2b OLLAMA_BASE_URL=http://localhost:11434 OLLAMA_TIMEOUT_SECONDS=180 npm run dev
 ```
 
 The model tag is configurable. Use `gemma4:e2b` for the lightweight local proof path, and a larger Gemma 4 tag only when the recording machine has enough memory.
@@ -32,7 +32,7 @@ This writes a public-safe run receipt to Supabase. It stores unsafe health claim
 
 ## Current Local Status
 
-This machine has Ollama available, but the last inspected model list only showed `llama3.1:latest`. Pull `gemma4:e2b` before recording the final local Gemma proof.
+This machine has Ollama `0.23.0` available and `gemma4:e2b` is installed. Use `ollama list` in the recording to show the local Gemma model before running the Ollama-mode triage path.
 
 ## Claim Boundary
 

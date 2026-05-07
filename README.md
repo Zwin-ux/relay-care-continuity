@@ -82,6 +82,7 @@ Latest Vercel preview: https://web-8ha9fvnv1-zwin-uxs-projects.vercel.app
 MODEL_MODE=replay
 GEMMA_MODEL=gemma4:e2b
 OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_TIMEOUT_SECONDS=180
 AGENT_PROVIDER=mock
 OPENCLAW_BASE_URL=
 OPENCLAW_API_KEY=
