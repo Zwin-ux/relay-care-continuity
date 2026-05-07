@@ -13,7 +13,7 @@ Replay uses mock data. No live dispatch or emergency-service connection.
 - Proof ledger: https://web-zwin-uxs-projects.vercel.app/proof
 - Figma layout QA: https://www.figma.com/design/z0AcAdbaYLGKC9Kd4gczbJ
 - Public code repository: https://github.com/Zwin-ux/relay-care-continuity
-- YouTube video: add final public video URL before submission.
+- YouTube video: pending final recording/upload.
 - Kaggle writeup draft: `docs/kaggle-writeup.md`
 - Media gallery plan: `docs/media-gallery.md`
 
@@ -135,7 +135,7 @@ Submission assets:
 - Proof ledger: https://web-zwin-uxs-projects.vercel.app/proof
 - Figma layout QA: https://www.figma.com/design/z0AcAdbaYLGKC9Kd4gczbJ
 - Public code repository: https://github.com/Zwin-ux/relay-care-continuity
-- YouTube video: add final public video URL before submission.
+- YouTube video: pending final recording/upload.
 - Notion finish plan: https://app.notion.com/p/3529316183be81b08dccd03ea31a2fd2
 - Linear finish issue: REF-130 media gallery and Kaggle writeup pass
 - Video brief: `docs/video-script.md`

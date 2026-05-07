@@ -13,7 +13,7 @@ Deadline: May 18, 2026 at 11:59 PM UTC.
 - Figma layout QA: https://www.figma.com/design/z0AcAdbaYLGKC9Kd4gczbJ
 - Vercel deployment: https://web-nx9mnp2kg-zwin-uxs-projects.vercel.app
 - Code repository: https://github.com/Zwin-ux/relay-care-continuity
-- YouTube video: add public video link before submission.
+- YouTube video: pending final recording/upload.
 - Kaggle writeup draft: `docs/kaggle-writeup.md`
 - Cover image candidate: `docs/media/gallery/01-cover-care-continuity-workspace.png`
 - Architecture proof image: `docs/media/gallery/06-architecture-replay-ollama.png`
