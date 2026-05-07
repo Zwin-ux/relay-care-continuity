@@ -19,6 +19,9 @@ Deadline: May 18, 2026 at 11:59 PM UTC.
 - Architecture proof image: `docs/media/gallery/06-architecture-replay-ollama.png`
 - Ollama proof capture frame: `docs/media/gallery/07-ollama-local-proof-frame.png`
 - Automated checks proof: `docs/media/gallery/08-test-proof-green.png`
+- Recording runbook: `docs/recording-runbook.md`
+- Kaggle links block: `docs/kaggle-links-block.md`
+- Ollama proof transcript: `docs/ollama-proof-transcript.md`
 
 ## Submission Requirements
 

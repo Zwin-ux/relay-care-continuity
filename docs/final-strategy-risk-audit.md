@@ -19,7 +19,7 @@ Do not claim certainty. The defensible claim is:
 
 | Risk | Why It Can Hurt | Fix / Gate |
 | --- | --- | --- |
-| Public repo missing | Kaggle requires public code. Without it, the submission is invalid. | Publish GitHub/Kaggle repo and replace README/writeup placeholders. |
+| Public repo inaccessible | Kaggle requires public code. Without it, the submission is invalid. | Done: public GitHub repo is live at `https://github.com/Zwin-ux/relay-care-continuity`. Re-check signed out before final submit. |
 | YouTube video missing | Kaggle says the video is the most important part. Without it, the project cannot compete well. | Produce final video under 3 minutes; add direct YouTube link to Kaggle writeup and README. |
 | Overclaiming medical capability | Judges may reject or distrust anything that looks like advice or clinical decision support. | Keep copy to "source reports", "missing information", "unsafe claim held", "no medical advice". Never show dosage advice. |
 | Looking like a static mock | Replay mode can be misread as fake if Ollama proof is not obvious. | Show local `MODEL_MODE=ollama` run in video and writeup. Include model-run logs and schema validation receipt. |

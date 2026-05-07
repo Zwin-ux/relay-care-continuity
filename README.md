@@ -140,6 +140,9 @@ Submission assets:
 - Notion finish plan: https://app.notion.com/p/3529316183be81b08dccd03ea31a2fd2
 - Linear finish issue: REF-130 media gallery and Kaggle writeup pass
 - Video brief: `docs/video-script.md`
+- Recording runbook: `docs/recording-runbook.md`
+- Kaggle links block: `docs/kaggle-links-block.md`
+- Ollama proof transcript: `docs/ollama-proof-transcript.md`
 - Writeup outline: `docs/writeup-outline.md`
 - Media checklist: `docs/media-gallery.md`
 - Technical proof checklist: `docs/technical-proof.md`

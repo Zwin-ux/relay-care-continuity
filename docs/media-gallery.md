@@ -34,7 +34,7 @@ Generated from the local app at 1440x900 and 390x844:
 
 7. `docs/media/gallery/07-ollama-local-proof-frame.png`
    - Recording frame for the local Gemma/Ollama verification capture.
-   - Replace or pair this with a terminal screenshot after `ollama pull gemma4:e2b` and a local `MODEL_MODE=ollama` triage run.
+   - Pair this with `docs/ollama-proof-transcript.md` or a live terminal clip showing `gemma4:e2b` and `MODEL_MODE=ollama`.
 
 8. `docs/media/gallery/08-test-proof-green.png`
    - Automated verification proof card.
@@ -45,8 +45,7 @@ Generated from the local app at 1440x900 and 390x844:
 
 ## Final Capture Needed
 
-- Local Gemma/Ollama terminal capture after `gemma4:e2b` is installed.
-- Supabase proof ledger screenshot after sync, or the offline fallback if public env vars are not configured.
+- Public YouTube upload thumbnail after the final edit is complete.
 - Optional code screenshot: `TriageOutput` schema with care-continuity fields.
 
 ## Recording Beats
