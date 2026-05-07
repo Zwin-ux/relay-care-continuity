@@ -1,0 +1,203 @@
+import { expect, test } from "@playwright/test";
+
+const apiURL = `http://127.0.0.1:${process.env.PLAYWRIGHT_API_PORT ?? "8000"}`;
+
+const emptySnapshot = {
+  app: {
+    model_mode: "replay",
+    agent_provider: "mock",
+    scenario_id: "wildfire_community_center",
+    scenario_loaded: false,
+    last_updated_at: "2026-04-30T22:10:31Z",
+  },
+  counts: {
+    signals_total: 0,
+    signals_unprocessed: 0,
+    incidents_total: 0,
+    needs_verification: 0,
+    high_priority: 0,
+    ready_to_dispatch: 0,
+    dispatched: 0,
+    resolved: 0,
+    follow_running: 0,
+    follow_completed: 0,
+  },
+  signals: [],
+  board: { lanes: [], counts: {} },
+  selected_incident: null,
+};
+
+async function loadAndGroup(page: import("@playwright/test").Page) {
+  await page.goto("/");
+  try {
+    await page.getByRole("button", { name: "Load reports" }).click({ timeout: 5_000 });
+    await expect(page.getByRole("heading", { name: "Incoming Reports" })).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("30 reports").first()).toBeVisible({ timeout: 15_000 });
+    await page.getByRole("button", { name: "Group reports" }).click({ timeout: 5_000 });
+  } catch {
+    await page.request.post(`${apiURL}/api/scenarios/load?include_snapshot=true`);
+    await page.request.post(`${apiURL}/api/triage/run-batch?include_snapshot=true`);
+    await page.goto("/");
+  }
+  await expect(page.getByText("Medication continuity").first()).toBeVisible({ timeout: 30_000 });
+}
+
+test("first-run workspace starts from the ledger, not an onboarding shell", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  let serveEmptySnapshot = true;
+  await page.route("**/api/snapshot**", async (route) => {
+    if (route.request().method() === "GET" && serveEmptySnapshot) {
+      await route.fulfill({ json: emptySnapshot });
+      return;
+    }
+    await route.continue();
+  });
+
+  await page.goto("/");
+  await expect(page.getByTestId("care-continuity-onboarding")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Incoming Reports" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Care Continuity Ledger" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Continuity Review" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Load reports" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Group reports" })).toBeVisible();
+
+  for (const banned of ["AI-powered", "Mission control", "Confidence", "Human Controlled", "Start guided review", "Reviewer launch"]) {
+    await expect(page.getByText(banned)).toHaveCount(0);
+  }
+
+  serveEmptySnapshot = false;
+  await page.getByRole("button", { name: "Load reports" }).click();
+  await expect(page.getByText("30 reports").first()).toBeVisible({ timeout: 15_000 });
+  await page.getByRole("button", { name: "Group reports" }).click();
+  await expect(page.getByRole("heading", { name: "Care Continuity Ledger" })).toBeVisible();
+  await expect(page.getByText("Medication continuity").first()).toBeVisible();
+  const medication = page.getByTestId(/continuity-task-/).filter({ hasText: "Medication continuity" }).first();
+  await expect(medication).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByText("Handoff unavailable").first()).toBeVisible();
+});
+
+test("opens the care-continuity workspace above the fold", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await loadAndGroup(page);
+
+  await expect(page.getByTestId("care-continuity-onboarding")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Care Continuity Ledger" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Continuity Review" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Incoming Reports" })).toBeVisible();
+
+  const ledgerBox = await page.getByRole("heading", { name: "Care Continuity Ledger" }).boundingBox();
+  expect(ledgerBox).not.toBeNull();
+  expect(ledgerBox!.y).toBeLessThan(760);
+
+  const medication = page.getByTestId(/continuity-task-/).filter({ hasText: "Medication continuity" }).first();
+  await expect(medication).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByText("Handoff unavailable").first()).toBeVisible();
+});
+
+test("loads reports into the care continuity workspace", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await loadAndGroup(page);
+
+  await expect(page.getByRole("heading", { name: "RELAY" })).toBeVisible();
+  await expect(page.getByText("Care Continuity", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Local reports grouped for evacuation shelter review.")).toBeVisible();
+  await expect(page.getByText("Context only. Not source evidence. No live dispatch connection.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Incoming Reports" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Care Continuity Ledger" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Continuity Review" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Required information" })).toBeVisible();
+  await expect(page.getByText("Source report: My grandparents are on Maple Ave").first()).toBeVisible();
+});
+
+test("selected medication continuity item shows missing fields and suppressed unsafe claims", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await loadAndGroup(page);
+
+  await page.getByTestId(/continuity-task-/).filter({ hasText: "Medication continuity" }).first().click();
+  await expect(page.getByText("Handoff unavailable").first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "Mark ready for handoff" })).toBeDisabled();
+  await expect(page.getByText(/required field.*open|Complete required fields/i).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Unsafe claim review" })).toBeVisible();
+  await expect(page.getByText("Unsafe medication instruction held for review.").first()).toBeVisible();
+  await expect(page.getByText("Unsupported insulin request includes unsafe dosing suggestion for Maple area.")).toHaveCount(0);
+  await expect(page.getByText("Suppressed as medical advice").first()).toBeVisible();
+});
+
+test("requesting missing info records a receipt without changing the selected ledger item", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await loadAndGroup(page);
+
+  const firstTask = page.getByTestId(/continuity-task-/).filter({ hasText: "Medication continuity" }).first();
+  await firstTask.click();
+  const selectedId = await firstTask.getAttribute("data-testid");
+  await page.getByRole("button", { name: "Request missing info" }).click();
+
+  await expect(page.getByText("Operation recorded")).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByText("Handoff unavailable").first()).toBeVisible();
+  await expect(page.locator(`[data-testid="${selectedId}"]`)).toHaveAttribute("aria-pressed", "true");
+});
+
+test("desktop layout keeps the three main zones in one row", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 820 });
+  await loadAndGroup(page);
+
+  const reports = await page.getByRole("heading", { name: "Incoming Reports" }).boundingBox();
+  const ledger = await page.getByRole("heading", { name: "Care Continuity Ledger" }).boundingBox();
+  const review = await page.getByRole("heading", { name: "Continuity Review" }).boundingBox();
+
+  expect(reports).not.toBeNull();
+  expect(ledger).not.toBeNull();
+  expect(review).not.toBeNull();
+  expect(ledger!.x).toBeGreaterThan(reports!.x + 120);
+  expect(review!.x).toBeGreaterThan(ledger!.x + 220);
+  expect(Math.abs(reports!.y - ledger!.y)).toBeLessThan(40);
+  expect(Math.abs(ledger!.y - review!.y)).toBeLessThan(40);
+});
+
+test("banned command-center and fake-precision copy is not visible", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await loadAndGroup(page);
+
+  for (const banned of [
+    "Human Controlled",
+    "Human Verified",
+    "AI-powered",
+    "Mission Lanes",
+    "Mission Review",
+    "Mission control",
+    "Draft Response Tasks",
+    "Task Review",
+    "Confidence",
+    "Report match",
+    "% rel.",
+    "Suggested unit",
+    "Handoff Lock",
+    "Route held",
+    "Emergency controlled",
+    "Start guided review",
+    "Reviewer launch",
+  ]) {
+    await expect(page.getByText(banned)).toHaveCount(0);
+  }
+});
+
+test("mobile layout keeps core care-continuity surfaces reachable", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await loadAndGroup(page);
+
+  await expect(page.getByRole("heading", { name: "RELAY" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Incoming Reports" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Care Continuity Ledger" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Continuity Review" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Mark ready for handoff" })).toBeDisabled();
+});
+
+test("proof ledger route is available with live Supabase or safe fixture fallback", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/proof");
+
+  await expect(page.getByRole("heading", { name: "RELAY Proof Ledger" })).toBeVisible();
+  await expect(page.getByText(/Supabase live|Proof ledger offline/)).toBeVisible();
+  await expect(page.getByText("Unsafe medication instruction held for review.").first()).toBeVisible();
+  await expect(page.getByText("Return to workspace")).toBeVisible();
+});

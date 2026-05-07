@@ -1,0 +1,18 @@
+[
+  {
+    "id": "ctx_wildfire_01",
+    "source": "Cached wildfire shelter context",
+    "retrieved_at": "2026-04-30T15:00:00.000Z",
+    "headline": "Shelter continuity risks during wildfire evacuations",
+    "body": "Context only: wildfire evacuation shelters should track medication access, smoke-sensitive groups, power-dependent equipment, infant supplies, mobility needs, and verified public updates.",
+    "source_url": "https://www.cdc.gov/wildfires/safety/index.html"
+  },
+  {
+    "id": "ctx_medical_01",
+    "source": "Cached medical-needs preparedness context",
+    "retrieved_at": "2026-04-30T15:00:00.000Z",
+    "headline": "Medical needs require logistics review, not medical advice",
+    "body": "Context only: medication lists, backup power for medical equipment, oxygen supply, and medical supplies are disaster preparedness concerns. RELAY does not recommend treatment or dosing.",
+    "source_url": "https://doh.wa.gov/emergencies/be-prepared-be-safe/emergency-information-specific-groups/medical-needs-disaster-tips"
+  }
+]

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">RELAY local Ollama verification capture frame</title>
+  <desc id="desc">A recording frame for showing Gemma 4 running locally through Ollama and RELAY validation.</desc>
+  <rect width="1440" height="900" fill="#eef3f8"/>
+  <rect x="52" y="48" width="1336" height="804" rx="28" fill="#ffffff" stroke="#d7dee9"/>
+  <text x="92" y="112" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700" fill="#0a1b3d">Local Gemma 4 Verification</text>
+  <text x="92" y="146" font-family="Inter, Arial, sans-serif" font-size="18" fill="#536579">Use this frame in the video next to a real terminal capture after the Gemma 4 model is installed.</text>
+
+  <rect x="92" y="202" width="780" height="442" rx="20" fill="#0b1220"/>
+  <circle cx="126" cy="232" r="7" fill="#ff5f57"/>
+  <circle cx="150" cy="232" r="7" fill="#ffbd2e"/>
+  <circle cx="174" cy="232" r="7" fill="#28c840"/>
+  <text x="120" y="290" font-family="Consolas, Menlo, monospace" font-size="20" fill="#9cc2ff">PS relay&gt; ollama list</text>
+  <text x="120" y="326" font-family="Consolas, Menlo, monospace" font-size="20" fill="#e7eefc">gemma4:e2b          local Gemma 4 model</text>
+  <text x="120" y="382" font-family="Consolas, Menlo, monospace" font-size="20" fill="#9cc2ff">PS relay&gt; $env:MODEL_MODE="ollama"</text>
+  <text x="120" y="418" font-family="Consolas, Menlo, monospace" font-size="20" fill="#9cc2ff">PS relay&gt; $env:GEMMA_MODEL="gemma4:e2b"</text>
+  <text x="120" y="474" font-family="Consolas, Menlo, monospace" font-size="20" fill="#9cc2ff">PS relay&gt; npm run dev</text>
+  <text x="120" y="530" font-family="Consolas, Menlo, monospace" font-size="20" fill="#e7eefc">model_runs.status = ok</text>
+  <text x="120" y="566" font-family="Consolas, Menlo, monospace" font-size="20" fill="#e7eefc">schema validator = passed</text>
+  <text x="120" y="602" font-family="Consolas, Menlo, monospace" font-size="20" fill="#e7eefc">ledger item = care continuity review</text>
+
+  <rect x="930" y="202" width="372" height="442" rx="20" fill="#f8fafc" stroke="#d7dee9"/>
+  <text x="964" y="252" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#0a1b3d">Capture checklist</text>
+  <text x="964" y="302" font-family="Inter, Arial, sans-serif" font-size="18" fill="#0a1b3d">1. Gemma 4 appears in Ollama</text>
+  <text x="964" y="346" font-family="Inter, Arial, sans-serif" font-size="18" fill="#0a1b3d">2. API runs in ollama mode</text>
+  <text x="964" y="390" font-family="Inter, Arial, sans-serif" font-size="18" fill="#0a1b3d">3. Pydantic schema passes</text>
+  <text x="964" y="434" font-family="Inter, Arial, sans-serif" font-size="18" fill="#0a1b3d">4. Ledger updates from model output</text>
+  <text x="964" y="478" font-family="Inter, Arial, sans-serif" font-size="18" fill="#0a1b3d">5. Handoff remains unavailable</text>
+
+  <rect x="92" y="704" width="1210" height="74" rx="18" fill="#fff7db" stroke="#d69e00"/>
+  <text x="126" y="736" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#0a1b3d">Recording boundary</text>
+  <text x="126" y="764" font-family="Inter, Arial, sans-serif" font-size="16" fill="#536579">Do not present replay mode as live model execution. Show Ollama mode only after the local Gemma 4 model is installed and the schema path is exercised.</text>
+</svg>

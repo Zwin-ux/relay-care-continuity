@@ -1,0 +1,202 @@
+{
+  "run_slug": "relay-care-continuity-replay",
+  "generated_at": "2026-05-06T02:12:24.112138Z",
+  "scenario_id": "wildfire_community_center",
+  "model_mode": "replay",
+  "gemma_model": "gemma4:e2b",
+  "counts": {
+    "source_reports": 30,
+    "continuity_items": 9,
+    "unsafe_claims_held": 1,
+    "missing_fields": 18,
+    "audit_events": 30
+  },
+  "eval_metrics": {
+    "incident_type_accuracy": 1.0,
+    "urgency_accuracy": 1.0,
+    "missing_info_detection": 1.0,
+    "unsafe_action_rate": 0.0
+  },
+  "continuity_items": [
+    {
+      "continuity_item_id": "public_information_review",
+      "incident_id": "inc_6f15c1aea7",
+      "title": "Public information review",
+      "care_domain": "public_information",
+      "care_label": "Public information",
+      "urgency": "medium",
+      "state_label": "Missing information",
+      "handoff_status": "Unavailable",
+      "source_report_count": 4,
+      "source_link_count": 4,
+      "missing_fields": [
+        "unresolved source detail"
+      ],
+      "unsafe_claims": [],
+      "conflicts": [],
+      "public_read": true
+    },
+    {
+      "continuity_item_id": "volunteer_capacity",
+      "incident_id": "inc_91feba7020",
+      "title": "Volunteer capacity",
+      "care_domain": "volunteer_capacity",
+      "care_label": "Volunteer capacity",
+      "urgency": "medium",
+      "state_label": "Missing information",
+      "handoff_status": "Unavailable",
+      "source_report_count": 2,
+      "source_link_count": 2,
+      "missing_fields": [
+        "unresolved source detail"
+      ],
+      "unsafe_claims": [],
+      "conflicts": [],
+      "public_read": true
+    },
+    {
+      "continuity_item_id": "power-dependent_care",
+      "incident_id": "inc_70e7f38cd1",
+      "title": "Power-dependent care",
+      "care_domain": "oxygen_power",
+      "care_label": "Oxygen / power",
+      "urgency": "medium",
+      "state_label": "Missing information",
+      "handoff_status": "Unavailable",
+      "source_report_count": 2,
+      "source_link_count": 2,
+      "missing_fields": [
+        "backup power source",
+        "contact phone",
+        "safe route"
+      ],
+      "unsafe_claims": [],
+      "conflicts": [],
+      "public_read": true
+    },
+    {
+      "continuity_item_id": "mobility_transport",
+      "incident_id": "inc_62eedc2953",
+      "title": "Mobility transport",
+      "care_domain": "mobility_transport",
+      "care_label": "Mobility",
+      "urgency": "medium",
+      "state_label": "Missing information",
+      "handoff_status": "Unavailable",
+      "source_report_count": 3,
+      "source_link_count": 3,
+      "missing_fields": [
+        "unresolved source detail"
+      ],
+      "unsafe_claims": [],
+      "conflicts": [],
+      "public_read": true
+    },
+    {
+      "continuity_item_id": "hazard_access_review",
+      "incident_id": "inc_6ccf305e7d",
+      "title": "Hazard access review",
+      "care_domain": "hazard_access",
+      "care_label": "Hazard access",
+      "urgency": "medium",
+      "state_label": "Missing information",
+      "handoff_status": "Unavailable",
+      "source_report_count": 6,
+      "source_link_count": 6,
+      "missing_fields": [
+        "unresolved source detail"
+      ],
+      "unsafe_claims": [],
+      "conflicts": [],
+      "public_read": true
+    },
+    {
+      "continuity_item_id": "shelter_comfort_supplies",
+      "incident_id": "inc_7883cbe2d0",
+      "title": "Shelter comfort supplies",
+      "care_domain": "shelter_comfort",
+      "care_label": "Shelter comfort",
+      "urgency": "medium",
+      "state_label": "Missing information",
+      "handoff_status": "Unavailable",
+      "source_report_count": 4,
+      "source_link_count": 4,
+      "missing_fields": [
+        "unresolved source detail"
+      ],
+      "unsafe_claims": [],
+      "conflicts": [],
+      "public_read": true
+    },
+    {
+      "continuity_item_id": "medication_continuity",
+      "incident_id": "inc_224fa02823",
+      "title": "Medication continuity",
+      "care_domain": "medication",
+      "care_label": "Medication",
+      "urgency": "high",
+      "state_label": "Unsafe claim held",
+      "handoff_status": "Unavailable",
+      "source_report_count": 3,
+      "source_link_count": 3,
+      "missing_fields": [
+        "authorized pickup contact",
+        "pharmacy or pickup location",
+        "prescription authorization",
+        "qualified clinical guidance",
+        "recipient identity",
+        "specific recipient"
+      ],
+      "unsafe_claims": [
+        "Unsafe medication instruction held for review."
+      ],
+      "conflicts": [
+        "Unsafe medication instruction held for review."
+      ],
+      "public_read": true
+    },
+    {
+      "continuity_item_id": "infant_supply_continuity",
+      "incident_id": "inc_315bfbde13",
+      "title": "Infant supply continuity",
+      "care_domain": "infant_supply",
+      "care_label": "Infant supply",
+      "urgency": "high",
+      "state_label": "Missing information",
+      "handoff_status": "Unavailable",
+      "source_report_count": 4,
+      "source_link_count": 4,
+      "missing_fields": [
+        "current quantity",
+        "drop-off contact",
+        "formula type"
+      ],
+      "unsafe_claims": [],
+      "conflicts": [],
+      "public_read": true
+    },
+    {
+      "continuity_item_id": "smoke_and_access_review",
+      "incident_id": "inc_540fb10c57",
+      "title": "Smoke / access review",
+      "care_domain": "hazard_access",
+      "care_label": "Hazard access",
+      "urgency": "high",
+      "state_label": "Missing information",
+      "handoff_status": "Unavailable",
+      "source_report_count": 2,
+      "source_link_count": 2,
+      "missing_fields": [
+        "unresolved source detail"
+      ],
+      "unsafe_claims": [],
+      "conflicts": [],
+      "public_read": true
+    }
+  ],
+  "proof_notes": [
+    "Supabase stores a durable proof ledger for the submission.",
+    "Unsafe health claims are suppressed and represented as held-review labels.",
+    "The public preview remains replay-safe; Ollama mode is the local Gemma proof path."
+  ]
+}

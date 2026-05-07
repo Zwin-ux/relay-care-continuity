@@ -1,0 +1,25 @@
+{
+  "name": "relay-demo",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "packages/shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "cd apps/api && python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000",
+    "dev:web": "npm --workspace apps/web run dev",
+    "test": "npm --workspace apps/web run test && cd apps/api && python -m pytest",
+    "test:api": "cd apps/api && python -m pytest",
+    "test:web": "npm --workspace apps/web run test",
+    "test:e2e": "npm --workspace apps/web run test:e2e",
+    "demo-ollama": "cross-env MODEL_MODE=ollama GEMMA_MODEL=gemma4:e2b npm run dev",
+    "proof:payload": "cd apps/api && python -m scripts.sync_supabase_proof --ensure-demo-data --run-slug relay-care-continuity-replay --fixture-out docs/media/gallery/relay-proof-ledger.fixture.json --payload-out docs/media/gallery/relay-proof-ledger.payload.json --dry-run",
+    "proof:sql": "python apps/api/scripts/export_supabase_proof_sql.py docs/media/gallery/relay-proof-ledger.payload.json --out docs/media/gallery/relay-proof-ledger.publish.sql",
+    "proof:sync": "cd apps/api && python -m scripts.sync_supabase_proof --ensure-demo-data"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0"
+  }
+}

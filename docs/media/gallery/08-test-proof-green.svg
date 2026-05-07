@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">RELAY automated verification passed</title>
+  <desc id="desc">A proof card showing the final build, unit, API, and Playwright checks passing for RELAY.</desc>
+  <rect width="1440" height="900" fill="#eef3f8"/>
+  <rect x="64" y="58" width="1312" height="784" rx="28" fill="#ffffff" stroke="#d7dee9"/>
+  <text x="104" y="126" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="700" fill="#0a1b3d">RELAY Verification Pass</text>
+  <text x="104" y="160" font-family="Inter, Arial, sans-serif" font-size="18" fill="#536579">Submission checks run after the Care Continuity freeze.</text>
+
+  <rect x="104" y="218" width="568" height="470" rx="22" fill="#0b1220"/>
+  <circle cx="138" cy="250" r="7" fill="#ff5f57"/>
+  <circle cx="162" cy="250" r="7" fill="#ffbd2e"/>
+  <circle cx="186" cy="250" r="7" fill="#28c840"/>
+  <text x="136" y="312" font-family="Consolas, Menlo, monospace" font-size="19" fill="#9cc2ff">npm --workspace apps/web run build</text>
+  <text x="136" y="348" font-family="Consolas, Menlo, monospace" font-size="19" fill="#b8f5c8">compiled successfully</text>
+  <text x="136" y="412" font-family="Consolas, Menlo, monospace" font-size="19" fill="#9cc2ff">npm test</text>
+  <text x="136" y="448" font-family="Consolas, Menlo, monospace" font-size="19" fill="#b8f5c8">21 web tests passed</text>
+  <text x="136" y="484" font-family="Consolas, Menlo, monospace" font-size="19" fill="#b8f5c8">8 API tests passed</text>
+  <text x="136" y="548" font-family="Consolas, Menlo, monospace" font-size="19" fill="#9cc2ff">npm --workspace apps/web run test:e2e</text>
+  <text x="136" y="584" font-family="Consolas, Menlo, monospace" font-size="19" fill="#b8f5c8">8 Playwright tests passed</text>
+  <text x="136" y="620" font-family="Consolas, Menlo, monospace" font-size="19" fill="#b8f5c8">ledger, unsafe claim, mobile, copy checks</text>
+
+  <rect x="730" y="218" width="574" height="470" rx="22" fill="#f8fafc" stroke="#d7dee9"/>
+  <text x="766" y="272" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700" fill="#0a1b3d">What this proves</text>
+  <text x="766" y="330" font-family="Inter, Arial, sans-serif" font-size="19" fill="#0a1b3d">1. The public workspace builds cleanly.</text>
+  <text x="766" y="384" font-family="Inter, Arial, sans-serif" font-size="19" fill="#0a1b3d">2. Care-continuity view models pass unit tests.</text>
+  <text x="766" y="438" font-family="Inter, Arial, sans-serif" font-size="19" fill="#0a1b3d">3. FastAPI safety rules and replay path pass.</text>
+  <text x="766" y="492" font-family="Inter, Arial, sans-serif" font-size="19" fill="#0a1b3d">4. E2E confirms the ledger is visible above the fold.</text>
+  <text x="766" y="546" font-family="Inter, Arial, sans-serif" font-size="19" fill="#0a1b3d">5. Banned command-center and fake-precision copy is absent.</text>
+
+  <rect x="104" y="736" width="1200" height="58" rx="16" fill="#f3fbf6" stroke="#2e7d4f"/>
+  <text x="136" y="772" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#0a1b3d">Status: automated submission checks passed locally.</text>
+</svg>

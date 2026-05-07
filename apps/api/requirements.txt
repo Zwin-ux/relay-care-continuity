@@ -1,0 +1,6 @@
+fastapi>=0.121.0,<1
+uvicorn[standard]>=0.34.0,<1
+sqlmodel>=0.0.22,<1
+pydantic>=2.11.0,<3
+httpx>=0.28.0,<1
+pytest>=8.3.0,<9

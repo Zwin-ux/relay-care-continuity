@@ -1,0 +1,226 @@
+{
+  "safety_context": {
+    "summary": "The report is plausible but unsafe to act on without location and danger confirmation: {summary}",
+    "confidence": 0.81,
+    "findings": [
+      {
+        "finding_id": "find_safety_001",
+        "claim": "Scenario-local reports support that a physical hazard may be present.",
+        "support_level": "supported",
+        "confidence": 0.84,
+        "evidence_refs": ["__AUTO__"],
+        "source_notes": [
+          {
+            "label": "Scenario-local hazard reports",
+            "note": "Available signals include road, smoke, wire, or school-area hazard language.",
+            "source_type": "scenario_signal"
+          }
+        ]
+      },
+      {
+        "finding_id": "find_safety_002",
+        "claim": "The available reports do not by themselves confirm a safe volunteer route.",
+        "support_level": "unknown",
+        "confidence": 0.9,
+        "evidence_refs": ["__AUTO__"],
+        "source_notes": [
+          {
+            "label": "Available scenario reports",
+            "note": "Reports describe hazards but do not confirm all safety-critical details.",
+            "source_type": "scenario_signal"
+          }
+        ]
+      }
+    ],
+    "questions_for_human_verification": [
+      "What is the exact location?",
+      "Is anyone injured, trapped, or unable to leave?",
+      "Have local authorities already been notified?"
+    ],
+    "safety_notes": [
+      "Do not send volunteers into a possible hazard until location and danger level are confirmed."
+    ],
+    "suggested_next_coordinator_action": {
+      "action_type": "request_verification",
+      "description": "Ask the sender for exact location and immediate danger confirmation for: {summary}"
+    },
+    "limitations": [
+      "This follow packet uses scenario-local evidence and does not contact emergency services."
+    ]
+  },
+  "resource_context": {
+    "summary": "The supply request has supporting scenario context, but quantities and drop-off details still need human confirmation: {summary}",
+    "confidence": 0.82,
+    "findings": [
+      {
+        "finding_id": "find_resource_001",
+        "claim": "Related scenario-local reports mention shelter supplies or infant-care items.",
+        "support_level": "supported",
+        "confidence": 0.86,
+        "evidence_refs": ["__AUTO__"],
+        "source_notes": [
+          {
+            "label": "Scenario-local supply reports",
+            "note": "Signals mention formula, diapers, chargers, blankets, or charging cables.",
+            "source_type": "scenario_signal"
+          }
+        ]
+      }
+    ],
+    "questions_for_human_verification": [
+      "What exact quantity is needed?",
+      "Where should supplies be dropped off?",
+      "Who is the coordinator contact at the drop-off point?"
+    ],
+    "safety_notes": [
+      "Route deliveries away from active hazards and avoid making medical or feeding advice claims."
+    ],
+    "suggested_next_coordinator_action": {
+      "action_type": "prepare_dispatch_after_verification",
+      "description": "Prepare a supply run after the coordinator confirms quantity and drop-off contact for: {summary}"
+    },
+    "limitations": [
+      "This packet does not verify inventory in real time."
+    ]
+  },
+  "volunteer_context": {
+    "summary": "The volunteer offer may be useful, but identity, contact, location, and safe assignment must be confirmed first: {summary}",
+    "confidence": 0.78,
+    "findings": [
+      {
+        "finding_id": "find_volunteer_001",
+        "claim": "Related scenario-local reports include volunteer capacity or availability.",
+        "support_level": "supported",
+        "confidence": 0.8,
+        "evidence_refs": ["__AUTO__"],
+        "source_notes": [
+          {
+            "label": "Scenario-local volunteer reports",
+            "note": "Signals mention available volunteers, vehicles, traffic support, or skilled help.",
+            "source_type": "scenario_signal"
+          }
+        ]
+      }
+    ],
+    "questions_for_human_verification": [
+      "What is the volunteer contact number?",
+      "Where is the volunteer starting from?",
+      "Has the coordinator approved this assignment?"
+    ],
+    "safety_notes": [
+      "Do not assign volunteers into active hazard areas."
+    ],
+    "suggested_next_coordinator_action": {
+      "action_type": "request_verification",
+      "description": "Confirm identity, contact, location, and safe assignment boundaries for: {summary}"
+    },
+    "limitations": [
+      "This packet does not verify credentials or perform background checks."
+    ]
+  },
+  "verify_rumor": {
+    "summary": "The information report should be treated as unverified until a primary or official source confirms it: {summary}",
+    "confidence": 0.76,
+    "findings": [
+      {
+        "finding_id": "find_rumor_001",
+        "claim": "The report depends on rumor, secondhand information, or an explicit lack of confirmation.",
+        "support_level": "supported",
+        "confidence": 0.88,
+        "evidence_refs": ["__AUTO__"],
+        "source_notes": [
+          {
+            "label": "Scenario-local information reports",
+            "note": "Signals include rumor or confirmation language that should be checked before broadcast.",
+            "source_type": "scenario_signal"
+          }
+        ]
+      }
+    ],
+    "questions_for_human_verification": [
+      "What is the primary source?",
+      "Can shelter staff or an official channel confirm it?",
+      "What exact wording should be shared after confirmation?"
+    ],
+    "safety_notes": [
+      "Do not broadcast unverified claims as fact."
+    ],
+    "suggested_next_coordinator_action": {
+      "action_type": "request_verification",
+      "description": "Check a primary or official source before sharing this update: {summary}"
+    },
+    "limitations": [
+      "This mock packet does not perform live web or official-source checks."
+    ]
+  },
+  "duplicate_check": {
+    "summary": "This incident may overlap with another scenario-local report and should be reviewed before separate action: {summary}",
+    "confidence": 0.83,
+    "findings": [
+      {
+        "finding_id": "find_duplicate_001",
+        "claim": "Related scenario-local signals appear to describe the same need or location.",
+        "support_level": "partially_supported",
+        "confidence": 0.82,
+        "evidence_refs": ["__AUTO__"],
+        "source_notes": [
+          {
+            "label": "Scenario-local related reports",
+            "note": "Multiple reports share overlapping location or need language.",
+            "source_type": "scenario_signal"
+          }
+        ]
+      }
+    ],
+    "questions_for_human_verification": [
+      "Is this the same household, route, or shelter need as an existing incident?",
+      "Which incident should retain the latest evidence?",
+      "Would merging hide a distinct safety issue?"
+    ],
+    "safety_notes": [
+      "Do not merge away unique safety-critical details."
+    ],
+    "suggested_next_coordinator_action": {
+      "action_type": "review_duplicate",
+      "description": "Compare this packet against existing incident cards before merging: {summary}"
+    },
+    "limitations": [
+      "This packet flags overlap but does not merge incidents."
+    ]
+  },
+  "fill_missing_info": {
+    "summary": "The incident still needs human-confirmed details before operational action: {summary}",
+    "confidence": 0.79,
+    "findings": [
+      {
+        "finding_id": "find_missing_001",
+        "claim": "The current incident has missing information that blocks confident action.",
+        "support_level": "supported",
+        "confidence": 0.86,
+        "evidence_refs": ["__AUTO__"],
+        "source_notes": [
+          {
+            "label": "Current incident packet",
+            "note": "The triage output already lists missing information for coordinator follow-up.",
+            "source_type": "local_fixture"
+          }
+        ]
+      }
+    ],
+    "questions_for_human_verification": [
+      "What exact missing detail should be confirmed first?",
+      "Who can confirm it directly?",
+      "Does the answer change whether dispatch or escalation is safe?"
+    ],
+    "safety_notes": [
+      "Treat the packet as context until the coordinator confirms missing details."
+    ],
+    "suggested_next_coordinator_action": {
+      "action_type": "request_verification",
+      "description": "Use this packet to guide a callback for: {summary}"
+    },
+    "limitations": [
+      "Follow results are context only and do not verify the incident automatically."
+    ]
+  }
+}

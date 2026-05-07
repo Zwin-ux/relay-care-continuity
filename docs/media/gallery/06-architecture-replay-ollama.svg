@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">RELAY replay and Ollama architecture</title>
+  <desc id="desc">Replay mode and Ollama mode both feed schema validation, persistence, the care continuity ledger, review pane, and audit receipt.</desc>
+  <rect width="1440" height="900" fill="#eef3f8"/>
+  <rect x="48" y="44" width="1344" height="812" rx="28" fill="#ffffff" stroke="#d7dee9"/>
+  <text x="88" y="105" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700" fill="#0a1b3d">RELAY Care Continuity Architecture</text>
+  <text x="88" y="138" font-family="Inter, Arial, sans-serif" font-size="18" fill="#536579">Public preview uses deterministic replay. Local proof uses Gemma 4 through Ollama. Both paths validate the same schema.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#1652f0"/>
+    </marker>
+    <style>
+      .box { fill: #f8fafc; stroke: #d7dee9; stroke-width: 2; }
+      .blue { fill: #e8f0ff; stroke: #1652f0; }
+      .amber { fill: #fff7db; stroke: #d69e00; }
+      .green { fill: #f3fbf6; stroke: #2e7d4f; }
+      .red { fill: #fff1ef; stroke: #c0352b; }
+      .label { font-family: Inter, Arial, sans-serif; font-size: 22px; font-weight: 700; fill: #0a1b3d; }
+      .body { font-family: Inter, Arial, sans-serif; font-size: 15px; fill: #536579; }
+      .small { font-family: Inter, Arial, sans-serif; font-size: 13px; fill: #536579; }
+      .mono { font-family: Consolas, Menlo, monospace; font-size: 14px; fill: #0a1b3d; }
+      .line { stroke: #1652f0; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #8da2b8; stroke-width: 2.5; fill: none; stroke-dasharray: 7 7; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect class="box" x="88" y="206" width="210" height="120" rx="18"/>
+  <text class="label" x="112" y="252">Source reports</text>
+  <text class="body" x="112" y="282">Texts, shelter notes,</text>
+  <text class="body" x="112" y="305">volunteer reports, images</text>
+
+  <rect class="blue" x="360" y="174" width="240" height="104" rx="18"/>
+  <text class="label" x="388" y="218">Replay mode</text>
+  <text class="mono" x="388" y="249">MODEL_MODE=replay</text>
+
+  <rect class="green" x="360" y="310" width="240" height="104" rx="18"/>
+  <text class="label" x="388" y="354">Ollama mode</text>
+  <text class="mono" x="388" y="385">GEMMA_MODEL=gemma4:e2b</text>
+
+  <rect class="amber" x="672" y="238" width="224" height="130" rx="18"/>
+  <text class="label" x="700" y="286">Gemma triage</text>
+  <text class="body" x="700" y="318">care domain</text>
+  <text class="body" x="700" y="342">missing fields</text>
+
+  <rect class="blue" x="968" y="238" width="236" height="130" rx="18"/>
+  <text class="label" x="996" y="286">Schema validator</text>
+  <text class="body" x="996" y="318">Pydantic contract</text>
+  <text class="body" x="996" y="342">validation errors logged</text>
+
+  <rect class="box" x="88" y="498" width="220" height="126" rx="18"/>
+  <text class="label" x="116" y="548">Public context</text>
+  <text class="body" x="116" y="580">Cached guidance</text>
+  <text class="small" x="116" y="604">context only, not evidence</text>
+
+  <rect class="box" x="402" y="486" width="226" height="150" rx="18"/>
+  <text class="label" x="430" y="534">SQLite state</text>
+  <text class="body" x="430" y="566">signals, incidents,</text>
+  <text class="body" x="430" y="590">model runs, audit events</text>
+
+  <rect class="green" x="700" y="486" width="230" height="150" rx="18"/>
+  <text class="label" x="728" y="534">Care ledger</text>
+  <text class="body" x="728" y="566">source links</text>
+  <text class="body" x="728" y="590">unsafe claims held</text>
+
+  <rect class="amber" x="1002" y="486" width="236" height="150" rx="18"/>
+  <text class="label" x="1030" y="534">Continuity review</text>
+  <text class="body" x="1030" y="566">required fields</text>
+  <text class="body" x="1030" y="590">handoff unavailable</text>
+
+  <rect class="red" x="1020" y="694" width="274" height="96" rx="18"/>
+  <text class="label" x="1048" y="735">Audit receipt</text>
+  <text class="body" x="1048" y="765">Every model and reviewer event is recorded.</text>
+
+  <path class="line" d="M298 266 C324 266,334 226,360 226"/>
+  <path class="line" d="M298 266 C324 266,334 362,360 362"/>
+  <path class="line" d="M600 226 C638 226,634 282,672 282"/>
+  <path class="line" d="M600 362 C638 362,634 326,672 326"/>
+  <path class="line" d="M896 303 L968 303"/>
+  <path class="line" d="M1086 368 C1086 432,514 430,514 486"/>
+  <path class="line" d="M628 562 L700 562"/>
+  <path class="line" d="M930 562 L1002 562"/>
+  <path class="line" d="M1120 636 L1120 694"/>
+  <path class="dash" d="M308 562 L402 562"/>
+
+  <rect x="88" y="730" width="654" height="60" rx="14" fill="#f8fafc" stroke="#d7dee9"/>
+  <text class="small" x="112" y="756">Boundary: RELAY does not provide medical advice, verify live conditions, contact emergency services, or dispatch responders.</text>
+  <text class="small" x="112" y="778">It groups reports, exposes missing information, holds unsafe claims, and records review events.</text>
+</svg>
