@@ -59,6 +59,15 @@ export default async function ProofPage() {
           <h2 className="text-base font-semibold">Technical receipt</h2>
           <div className="mt-3 grid gap-2">
             <ReceiptRow label="Scenario" value={proof.scenario_id} />
+            <ReceiptRow label="Location" value={proof.location?.label ?? "Santa Rosa, CA"} />
+            <ReceiptRow
+              label="Local context"
+              value={
+                proof.location
+                  ? `${proof.location.hazard_type} / ${proof.location.site_type} / ${proof.location.context_mode}`
+                  : "wildfire / evacuation shelter / fixture"
+              }
+            />
             <ReceiptRow label="Mode" value={proof.model_mode} />
             <ReceiptRow label="Gemma model" value={proof.gemma_model} />
             <ReceiptRow label="Generated" value={new Date(proof.generated_at).toLocaleString()} />

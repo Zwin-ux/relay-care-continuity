@@ -47,7 +47,7 @@ Visual: final product screen with the live preview URL and repo link.
 ## Must Show
 
 - Live preview URL: `https://web-zwin-uxs-projects.vercel.app`
-- Latest preview for recording: `https://web-8ha9fvnv1-zwin-uxs-projects.vercel.app`
+- Latest preview for recording: `https://web-cbmy5zxr2-zwin-uxs-projects.vercel.app`
 - Public code repository: `https://github.com/Zwin-ux/relay-care-continuity`
 - Proof ledger route for technical segment: `/proof`
 - Figma layout QA: `https://www.figma.com/design/z0AcAdbaYLGKC9Kd4gczbJ`

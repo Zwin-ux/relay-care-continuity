@@ -9,7 +9,7 @@ Replay uses mock data. No live dispatch or emergency-service connection.
 ## Public Links
 
 - Live preview: https://web-zwin-uxs-projects.vercel.app
-- Latest Vercel preview: https://web-8ha9fvnv1-zwin-uxs-projects.vercel.app
+- Latest Vercel preview: https://web-cbmy5zxr2-zwin-uxs-projects.vercel.app
 - Proof ledger: https://web-zwin-uxs-projects.vercel.app/proof
 - Figma layout QA: https://www.figma.com/design/z0AcAdbaYLGKC9Kd4gczbJ
 - Public code repository: https://github.com/Zwin-ux/relay-care-continuity
@@ -74,7 +74,7 @@ npm run dev
 Open `http://127.0.0.1:3000`.
 
 Public preview: https://web-zwin-uxs-projects.vercel.app
-Latest Vercel preview: https://web-8ha9fvnv1-zwin-uxs-projects.vercel.app
+Latest Vercel preview: https://web-cbmy5zxr2-zwin-uxs-projects.vercel.app
 
 ## Environment
 
@@ -132,7 +132,7 @@ Target tracks:
 Submission assets:
 
 - Live preview: https://web-zwin-uxs-projects.vercel.app
-- Latest Vercel preview: https://web-8ha9fvnv1-zwin-uxs-projects.vercel.app
+- Latest Vercel preview: https://web-cbmy5zxr2-zwin-uxs-projects.vercel.app
 - Proof ledger: https://web-zwin-uxs-projects.vercel.app/proof
 - Figma layout QA: https://www.figma.com/design/z0AcAdbaYLGKC9Kd4gczbJ
 - Public code repository: https://github.com/Zwin-ux/relay-care-continuity
@@ -148,6 +148,12 @@ Submission assets:
 - Technical proof checklist: `docs/technical-proof.md`
 - Supabase proof ledger: `docs/supabase-proof-ledger.md`
 - Final strategy risk audit: `docs/final-strategy-risk-audit.md`
+- Location Activation docs index: `docs/location-activation-docs-index.md`
+- Location Activation implementation plan: `docs/location-activation-implementation.md`
+- Location Activation Linear packet: `docs/location-activation-linear.md`
+- Location Activation Notion spec: `docs/location-activation-notion.md`
+- Location Activation Figma brief: `docs/location-activation-figma.md`
+- Location Activation Supabase proof plan: `docs/location-activation-supabase.md`
 - HyperFrames production brief: `docs/hyperframes/`
 
 ## Architecture

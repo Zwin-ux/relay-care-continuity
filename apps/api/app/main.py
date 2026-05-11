@@ -31,7 +31,7 @@ from .schemas import (
     StateChange,
     VerificationCreate,
 )
-from .services import board_service, follow_service, snapshot_service, triage_service
+from .services import board_service, follow_service, location_pack_service, snapshot_service, triage_service
 
 app = FastAPI(title="RELAY API")
 app.add_middleware(
@@ -54,39 +54,32 @@ def read_json(path: Path) -> Any:
 
 @app.post("/api/scenarios/load")
 def load_scenario(include_snapshot: bool = False, session: Session = Depends(get_session)) -> dict[str, Any]:
-    for table in [
-        Dispatch,
-        Escalation,
-        Verification,
-        StateEvent,
-        IncidentEvidence,
-        IncidentSignal,
-        FollowTask,
-        IncidentNote,
-        Incident,
-        Signal,
-        ModelRun,
-        EvalRun,
-    ]:
-        session.exec(delete(table))
-    scenario = read_json(data_root() / "scenarios" / "wildfire_community_center.json")
-    for row in scenario:
-        session.add(
-            Signal(
-                source=row["source"],
-                text=row["text"],
-                location_hint=row.get("location_hint"),
-                attachments_json=json.dumps(row.get("attachments", [])),
-            )
-        )
-    session.commit()
+    pack, loaded = location_pack_service.activate_location_pack(session, location_pack_service.DEFAULT_LOCATION_PACK_ID)
     return follow_service.mutation_result(
         "scenario",
-        "wildfire_community_center",
-        f"Loaded {len(scenario)} incoming signals.",
+        pack["scenario_id"],
+        f"Loaded {loaded} incoming signals.",
         include_snapshot=include_snapshot,
         session=session,
-        extra={"loaded": len(scenario), "scenario": "wildfire_community_center"},
+        extra={"loaded": loaded, "scenario": pack["scenario_id"], "location_pack_id": pack["id"]},
+    )
+
+
+@app.get("/api/location-packs")
+def list_location_packs() -> list[dict[str, Any]]:
+    return location_pack_service.list_location_packs()
+
+
+@app.post("/api/location-packs/{pack_id}/activate")
+def activate_location_pack(pack_id: str, include_snapshot: bool = False, session: Session = Depends(get_session)) -> dict[str, Any]:
+    pack, loaded = location_pack_service.activate_location_pack(session, pack_id)
+    return follow_service.mutation_result(
+        "location_pack",
+        pack["id"],
+        f"Activated {pack['location']['display']} local context with {loaded} source reports.",
+        include_snapshot=include_snapshot,
+        session=session,
+        extra={"loaded": loaded, "scenario": pack["scenario_id"], "location_pack_id": pack["id"]},
     )
 
 

@@ -1,0 +1,48 @@
+{
+  "id": "flood_asheville",
+  "label": "Asheville flood shelter",
+  "short_label": "Flood shelter",
+  "hazard_type": "flood",
+  "site_type": "temporary shelter",
+  "scenario_id": "wildfire_community_center",
+  "location": {
+    "city": "Asheville",
+    "region": "North Carolina",
+    "display": "Asheville, NC"
+  },
+  "public_context": [
+    {
+      "source": "Shelter continuity context",
+      "label": "Flood access constraints",
+      "body": "Flood response can interrupt transport, medication access, charging, and safe route confirmation for shelter residents.",
+      "context_only": true
+    },
+    {
+      "source": "Public-health continuity context",
+      "label": "Water and power uncertainty",
+      "body": "Source reports about water safety, power-dependent devices, and road closures should stay grouped for review until local staff confirm details.",
+      "context_only": true
+    }
+  ],
+  "care_domains": [
+    "medication",
+    "oxygen_power",
+    "mobility_transport",
+    "infant_supply",
+    "hazard_access",
+    "public_information"
+  ],
+  "required_fields": {
+    "medication": ["recipient_identity", "pharmacy_or_pickup_location", "safe_pickup_route"],
+    "oxygen_power": ["device_type", "battery_runtime", "charging_location", "backup_power_source"],
+    "mobility_transport": ["pickup_location", "mobility_constraint", "accessible_vehicle_need"],
+    "infant_supply": ["supply_type", "quantity_needed", "dropoff_contact"],
+    "hazard_access": ["exact_location", "route_condition", "second_source_report"],
+    "public_information": ["message_owner", "reviewed_source", "conflict_status"]
+  },
+  "boundaries": [
+    "Flood context is not proof that a source report is true.",
+    "Road or water-safety claims require local review.",
+    "No live dispatch connection."
+  ]
+}

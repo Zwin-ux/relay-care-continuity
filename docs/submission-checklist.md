@@ -7,11 +7,11 @@ Deadline: May 18, 2026 at 11:59 PM UTC.
 ## Links
 
 - Live demo: https://web-zwin-uxs-projects.vercel.app
-- Latest Vercel preview: https://web-8ha9fvnv1-zwin-uxs-projects.vercel.app
+- Latest Vercel preview: https://web-cbmy5zxr2-zwin-uxs-projects.vercel.app
 - Proof ledger: https://web-zwin-uxs-projects.vercel.app/proof
 - Proof ledger route: `/proof`
 - Figma layout QA: https://www.figma.com/design/z0AcAdbaYLGKC9Kd4gczbJ
-- Vercel deployment: https://web-nx9mnp2kg-zwin-uxs-projects.vercel.app
+- Vercel deployment: https://web-cbmy5zxr2-zwin-uxs-projects.vercel.app
 - Code repository: https://github.com/Zwin-ux/relay-care-continuity
 - YouTube video: pending final recording/upload.
 - Kaggle writeup draft: `docs/kaggle-writeup.md`
@@ -50,6 +50,7 @@ Deadline: May 18, 2026 at 11:59 PM UTC.
 - Local verification command uses `GEMMA_MODEL=gemma4:e2b`.
 - Figma file has the captured product layout plus a `RELAY Layout QA - Care Continuity` frame.
 - Supabase proof ledger schema is documented in `docs/supabase-proof-ledger.md`.
+- Location Activation planning packet is documented in `docs/location-activation-docs-index.md`.
 
 ## Final Submission Order
 
@@ -57,10 +58,11 @@ Deadline: May 18, 2026 at 11:59 PM UTC.
 2. Export a cover image from the full desktop workspace.
 3. Pull or confirm the Gemma 4 Ollama model and capture the local verification proof.
 4. Apply the Supabase proof schema and capture `/proof`.
-5. Publish the code repository.
-6. Publish the YouTube video.
-7. Paste final links into the Kaggle Writeup.
-8. Submit, then re-open the public links in a signed-out browser.
+5. If Location Activation ships, capture one compact shot of `Activate location` and confirm it does not claim live signal collection.
+6. Publish the code repository.
+7. Publish the YouTube video.
+8. Paste final links into the Kaggle Writeup.
+9. Submit, then re-open the public links in a signed-out browser.
 
 ## Last QA Before Submit
 

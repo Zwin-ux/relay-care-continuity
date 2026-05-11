@@ -56,8 +56,9 @@ export function useRelayMutation({
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ type, id }: { type: RelayActionType | "load" | "triage" | "eval"; id?: string }) => {
+    mutationFn: async ({ type, id }: { type: RelayActionType | "load" | "triage" | "eval" | "activate_location"; id?: string }) => {
       if (type === "load") return api.loadScenario();
+      if (type === "activate_location" && id) return api.activateLocation(id);
       if (type === "triage") return api.runTriage();
       if (type === "verify" && id) return api.verify(id);
       if (type === "dispatch" && id) return api.dispatch(id);

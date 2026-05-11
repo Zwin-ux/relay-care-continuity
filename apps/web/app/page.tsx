@@ -12,23 +12,23 @@ import { api, BoardCard, Incident, Snapshot } from "@/lib/api";
 import {
   CareDomain,
   ContinuityTask,
-  PublicContextItem,
   SourceReport,
   careLabel,
   continuityCounts,
+  PublicContextItem,
   preferredContinuityTaskId,
-  publicContextItems,
   toContinuityTasks,
   toMissingFields,
   toSourceReports,
 } from "@/lib/careContinuity";
+import { getLocationPack, locationContextLine, locationPackFromSnapshot, locationPacks } from "@/lib/locationPacks";
 import { getActionAvailability } from "@/lib/relayActions";
 import { OperationReceipt, useRelayMutation, useRelaySnapshot } from "@/lib/relayHooks";
 import { relayTokens } from "@/lib/relayTokens";
 import { formatTime, missingItemsForDisplay, sanitizeOperationMessage } from "@/lib/relayViewModel";
 
 type ReportFilter = "All" | "Critical" | "Missing info" | "Unsafe claim";
-type CommandAction = "load" | "triage" | "follow" | "verify" | "dispatch" | "escalate";
+type CommandAction = "load" | "triage" | "follow" | "verify" | "dispatch" | "escalate" | "activate_location";
 
 const reportFilters: ReportFilter[] = ["All", "Critical", "Missing info", "Unsafe claim"];
 
@@ -42,6 +42,8 @@ export default function Page() {
   const mutation = useRelayMutation({ selectedId, setSelectedId, setReceipt, setBlockedAction });
 
   const snapshot = snapshotQuery.data;
+  const activeLocationPack = locationPackFromSnapshot(snapshot);
+  const visibleContextItems = snapshot?.public_context?.length ? snapshot.public_context : activeLocationPack.public_context;
   const reports = useMemo(() => toSourceReports(snapshot), [snapshot]);
   const visibleReports = useMemo(() => filterSourceReports(reports, filter), [reports, filter]);
   const tasks = useMemo(() => toContinuityTasks(snapshot), [snapshot]);
@@ -85,7 +87,7 @@ export default function Page() {
         showActions={!showReviewerLaunch}
         onRun={run}
       />
-      <PublicContextStrip items={publicContextItems} />
+      <PublicContextStrip packLabel={activeLocationPack.location.display} contextLine={locationContextLine(activeLocationPack)} items={visibleContextItems} />
 
       {snapshotQuery.error ? (
         <div className="mt-3">
@@ -174,6 +176,7 @@ function CommandBar({
   showActions?: boolean;
   onRun: (type: CommandAction, id?: string) => void;
 }) {
+  const activePack = locationPackFromSnapshot(snapshot);
   return (
     <header className="relay-panel shrink-0 px-3 py-2">
       <div className="grid min-h-[64px] gap-3 min-[1120px]:grid-cols-[370px_minmax(380px,1fr)_auto] min-[1120px]:items-center">
@@ -189,7 +192,8 @@ function CommandBar({
         </div>
 
         <div className="thin-scroll flex min-w-0 items-center gap-2 overflow-x-auto">
-          <Meta label="Scenario" value="Wildfire Community Center" />
+          <Meta label="Location" value={snapshot?.app.location_label ?? activePack.location.display} />
+          <Meta label="Context" value={`${snapshot?.app.hazard_type ?? activePack.hazard_type} ${snapshot?.app.site_type ?? activePack.site_type}`} />
           <Meta label="Mode" value={snapshot?.app.model_mode === "ollama" ? "Local Gemma" : "Replay"} />
           <Meta label="Reports" value={String(counts.reports)} />
           <Meta label="Missing fields" value={String(counts.missingFields)} warn={counts.missingFields > 0} />
@@ -197,6 +201,22 @@ function CommandBar({
 
         {showActions ? (
           <div className="flex shrink-0 flex-wrap items-center gap-2 min-[1120px]:justify-end">
+            <label className="flex items-center gap-2 rounded-lg border border-[#d7dee9] bg-[#f8fafc] px-2 py-1 text-xs font-semibold text-[#536579]">
+              Activate location
+              <select
+                value={activePack.id}
+                disabled={loading}
+                onChange={(event) => onRun("activate_location", event.target.value)}
+                className="max-w-[190px] rounded-md border border-[#d7dee9] bg-white px-2 py-1 text-xs font-semibold text-[#0a1b3d] outline-none focus:border-[#1652f0] focus:ring-2 focus:ring-[#1652f0]/20"
+                aria-label="Activate location"
+              >
+                {locationPacks.map((pack) => (
+                  <option key={pack.id} value={pack.id}>
+                    {pack.location.display} - {pack.short_label}
+                  </option>
+                ))}
+              </select>
+            </label>
             <a
               href="/proof"
               className="rounded-lg border border-[#d7dee9] bg-white px-3 py-2 text-sm font-semibold text-[#0a1b3d] transition hover:border-[#1652f0] focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30"
@@ -225,16 +245,25 @@ function CommandBar({
   );
 }
 
-function PublicContextStrip({ items }: { items: PublicContextItem[] }) {
+function PublicContextStrip({
+  packLabel,
+  contextLine,
+  items,
+}: {
+  packLabel: string;
+  contextLine: string;
+  items: Array<PublicContextItem | { source: string; label: string; body: string; context_only: boolean }>;
+}) {
   const primary = items[0];
+  const headline = "headline" in primary ? primary.headline : primary.label;
   return (
     <section className="relay-panel mt-2 flex shrink-0 flex-col gap-2 px-3 py-2 min-[960px]:flex-row min-[960px]:items-center">
       <div className="flex min-w-0 flex-1 items-center gap-2">
-        <CdsTag tone="gray">Public context</CdsTag>
-        <p className="min-w-0 truncate text-sm font-medium text-[#0a1b3d]">{primary.headline}</p>
+        <CdsTag tone="gray">Local context</CdsTag>
+        <p className="min-w-0 truncate text-sm font-medium text-[#0a1b3d]">{packLabel}: {headline}</p>
         <p className="hidden truncate text-sm text-[#536579] min-[1280px]:block">{primary.body}</p>
       </div>
-      <p className="shrink-0 text-xs font-semibold text-[#536579]">Context only. Not source evidence. No live dispatch connection.</p>
+      <p className="shrink-0 text-xs font-semibold text-[#536579]">{contextLine}. Context only. Source reports still require review.</p>
     </section>
   );
 }

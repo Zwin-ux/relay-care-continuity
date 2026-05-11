@@ -1,6 +1,7 @@
 import scenario from "../data/wildfire_community_center.json";
 import replayOutputs from "../data/wildfire_community_center.gemma.json";
 import { AuditEvent, Board, BoardCard, Incident, MutationResult, Signal, Snapshot } from "@/lib/api";
+import { getLocationPack } from "@/lib/locationPacks";
 
 type ScenarioRow = { source: string; text: string; location_hint?: string };
 type ReplayRow = {
@@ -151,17 +152,24 @@ function preferredIncident(allIncidents: Incident[]) {
   return allIncidents.find((incident) => incident.summary === "Medication pickup needed for older adults on Maple Ave before evening.") ?? allIncidents[0] ?? null;
 }
 
-export function fallbackSnapshot(selectedIncidentId?: string | null): Snapshot {
+export function fallbackSnapshot(selectedIncidentId?: string | null, locationPackId?: string | null): Snapshot {
   const allIncidents = incidents();
   const selected = allIncidents.find((incident) => incident.id === selectedIncidentId) ?? preferredIncident(allIncidents);
+  const locationPack = getLocationPack(locationPackId);
   return {
     app: {
       model_mode: "replay",
       agent_provider: "fallback",
-      scenario_id: "wildfire_community_center",
+      scenario_id: locationPack.scenario_id,
+      location_pack_id: locationPack.id,
+      location_label: locationPack.location.display,
+      hazard_type: locationPack.hazard_type,
+      site_type: locationPack.site_type,
+      context_mode: "fixture",
       scenario_loaded: true,
       last_updated_at: new Date(Date.UTC(2026, 3, 30, 15, 12)).toISOString(),
     },
+    public_context: locationPack.public_context,
     counts: {
       signals_total: rows.length,
       signals_unprocessed: 0,
@@ -180,8 +188,8 @@ export function fallbackSnapshot(selectedIncidentId?: string | null): Snapshot {
   };
 }
 
-export function fallbackMutationResult(type: string, id?: string | null): MutationResult {
-  const snapshot = fallbackSnapshot(id);
+export function fallbackMutationResult(type: string, id?: string | null, locationPackId?: string | null): MutationResult {
+  const snapshot = fallbackSnapshot(id, locationPackId);
   return {
     ok: true,
     mutation_id: `mock_mutation_${Date.now()}`,

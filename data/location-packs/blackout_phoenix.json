@@ -1,0 +1,46 @@
+{
+  "id": "blackout_phoenix",
+  "label": "Phoenix blackout cooling center",
+  "short_label": "Blackout cooling center",
+  "hazard_type": "heat + blackout",
+  "site_type": "cooling center",
+  "scenario_id": "wildfire_community_center",
+  "location": {
+    "city": "Phoenix",
+    "region": "Arizona",
+    "display": "Phoenix, AZ"
+  },
+  "public_context": [
+    {
+      "source": "Cooling-center continuity context",
+      "label": "Heat and power stress",
+      "body": "Blackouts and heat can create continuity risks for charging, refrigeration, oxygen concentrators, mobility, and transportation.",
+      "context_only": true
+    },
+    {
+      "source": "Shelter operations context",
+      "label": "Power-dependent support",
+      "body": "Power-dependent device requests should stay linked to source reports and required fields before handoff.",
+      "context_only": true
+    }
+  ],
+  "care_domains": [
+    "oxygen_power",
+    "medication",
+    "shelter_comfort",
+    "mobility_transport",
+    "public_information"
+  ],
+  "required_fields": {
+    "oxygen_power": ["device_type", "battery_runtime", "charging_location", "backup_power_source"],
+    "medication": ["recipient_identity", "refrigeration_need", "pickup_or_storage_location"],
+    "shelter_comfort": ["quantity_needed", "dropoff_point", "supply_owner"],
+    "mobility_transport": ["pickup_location", "mobility_constraint", "cooling_center_destination"],
+    "public_information": ["message_owner", "reviewed_source", "language_need"]
+  },
+  "boundaries": [
+    "Cooling-center context is not source evidence.",
+    "Health and medication claims stay held for review.",
+    "No live dispatch connection."
+  ]
+}

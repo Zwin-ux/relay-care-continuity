@@ -7,6 +7,11 @@ const emptySnapshot = {
     model_mode: "replay",
     agent_provider: "mock",
     scenario_id: "wildfire_community_center",
+    location_pack_id: "wildfire_santa_rosa",
+    location_label: "Santa Rosa, CA",
+    hazard_type: "wildfire",
+    site_type: "evacuation shelter",
+    context_mode: "fixture",
     scenario_loaded: false,
     last_updated_at: "2026-04-30T22:10:31Z",
   },
@@ -23,6 +28,14 @@ const emptySnapshot = {
     follow_completed: 0,
   },
   signals: [],
+  public_context: [
+    {
+      source: "CDC wildfire safety",
+      label: "Smoke-sensitive groups",
+      body: "Wildfire smoke can affect continuity needs.",
+      context_only: true,
+    },
+  ],
   board: { lanes: [], counts: {} },
   selected_incident: null,
 };
@@ -60,6 +73,7 @@ test("first-run workspace starts from the ledger, not an onboarding shell", asyn
   await expect(page.getByRole("heading", { name: "Continuity Review" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Load reports" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Group reports" })).toBeVisible();
+  await expect(page.getByLabel("Activate location")).toBeVisible();
 
   for (const banned of ["AI-powered", "Mission control", "Confidence", "Human Controlled", "Start guided review", "Reviewer launch"]) {
     await expect(page.getByText(banned)).toHaveCount(0);
@@ -101,7 +115,8 @@ test("loads reports into the care continuity workspace", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "RELAY" })).toBeVisible();
   await expect(page.getByText("Care Continuity", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Local reports grouped for evacuation shelter review.")).toBeVisible();
-  await expect(page.getByText("Context only. Not source evidence. No live dispatch connection.")).toBeVisible();
+  await expect(page.getByText(/Context only\. Source reports still require review\./)).toBeVisible();
+  await expect(page.getByLabel("Activate location")).toHaveValue("wildfire_santa_rosa");
   await expect(page.getByRole("heading", { name: "Incoming Reports" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Care Continuity Ledger" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Continuity Review" })).toBeVisible();
@@ -176,6 +191,9 @@ test("banned command-center and fake-precision copy is not visible", async ({ pa
     "Emergency controlled",
     "Start guided review",
     "Reviewer launch",
+    "Get all signals",
+    "Live emergency feed",
+    "Verified local facts",
   ]) {
     await expect(page.getByText(banned)).toHaveCount(0);
   }

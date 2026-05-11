@@ -111,9 +111,15 @@ export type Snapshot = {
     model_mode: string;
     agent_provider: string;
     scenario_id: string;
+    location_pack_id?: string;
+    location_label?: string;
+    hazard_type?: string;
+    site_type?: string;
+    context_mode?: string;
     scenario_loaded: boolean;
     last_updated_at: string;
   };
+  public_context?: Array<{ source: string; label: string; body: string; context_only: boolean }>;
   counts: {
     signals_total: number;
     signals_unprocessed: number;
@@ -191,6 +197,15 @@ export const api = {
       return await request<MutationResult>(withSnapshot("/api/scenarios/load"), { method: "POST" });
     } catch (error) {
       if (shouldUseFrontendReplay(error)) return fallbackMutationResult("scenario");
+      throw error;
+    }
+  },
+  activateLocation: async (packId: string) => {
+    if (shouldUseFrontendReplayImmediately()) return fallbackMutationResult("location_pack", null, packId);
+    try {
+      return await request<MutationResult>(withSnapshot(`/api/location-packs/${packId}/activate`), { method: "POST" });
+    } catch (error) {
+      if (shouldUseFrontendReplay(error)) return fallbackMutationResult("location_pack", null, packId);
       throw error;
     }
   },

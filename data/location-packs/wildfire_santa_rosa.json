@@ -1,0 +1,48 @@
+{
+  "id": "wildfire_santa_rosa",
+  "label": "Santa Rosa wildfire shelter",
+  "short_label": "Wildfire shelter",
+  "hazard_type": "wildfire",
+  "site_type": "evacuation shelter",
+  "scenario_id": "wildfire_community_center",
+  "location": {
+    "city": "Santa Rosa",
+    "region": "California",
+    "display": "Santa Rosa, CA"
+  },
+  "public_context": [
+    {
+      "source": "CDC wildfire safety",
+      "label": "Smoke-sensitive groups",
+      "body": "Wildfire smoke can affect children, pregnancy, and people with asthma, COPD, heart disease, or diabetes.",
+      "context_only": true
+    },
+    {
+      "source": "Disaster medical-needs guidance",
+      "label": "Continuity risk",
+      "body": "Evacuation planning should account for medications, power-dependent equipment, oxygen, and medical supplies.",
+      "context_only": true
+    }
+  ],
+  "care_domains": [
+    "medication",
+    "oxygen_power",
+    "infant_supply",
+    "mobility_transport",
+    "hazard_access",
+    "public_information"
+  ],
+  "required_fields": {
+    "medication": ["recipient_identity", "pickup_location", "authorized_pickup_contact"],
+    "oxygen_power": ["device_type", "battery_runtime", "charging_location", "backup_power_source"],
+    "infant_supply": ["supply_type", "quantity_needed", "dropoff_contact"],
+    "mobility_transport": ["pickup_location", "mobility_constraint", "contact_method"],
+    "hazard_access": ["exact_location", "second_source_report", "safe_approach_route"],
+    "public_information": ["message_owner", "reviewed_source", "language_need"]
+  },
+  "boundaries": [
+    "No live dispatch connection.",
+    "Public context is not source evidence.",
+    "Unsafe health claims stay held for review."
+  ]
+}

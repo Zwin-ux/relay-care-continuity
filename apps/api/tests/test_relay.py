@@ -80,6 +80,10 @@ def test_snapshot_returns_canonical_read_model():
     initial = client.get("/api/snapshot").json()
     assert initial["app"]["model_mode"] == "replay"
     assert initial["app"]["agent_provider"] == "mock"
+    assert initial["app"]["location_pack_id"] == "wildfire_santa_rosa"
+    assert initial["app"]["location_label"] == "Santa Rosa, CA"
+    assert initial["app"]["context_mode"] == "fixture"
+    assert initial["public_context"][0]["context_only"] is True
     assert initial["counts"]["signals_total"] == 30
     assert initial["counts"]["signals_unprocessed"] == 30
     assert initial["board"]["lanes"][0]["cards"] == []
@@ -113,6 +117,19 @@ def test_snapshot_returns_canonical_read_model():
         "handoff_status",
         "follow_status",
     }
+
+
+def test_location_pack_activation_updates_snapshot_context():
+    packs = client.get("/api/location-packs").json()
+    assert {pack["id"] for pack in packs} >= {"wildfire_santa_rosa", "flood_asheville", "blackout_phoenix"}
+
+    activated = client.post("/api/location-packs/blackout_phoenix/activate?include_snapshot=true").json()
+    assert activated["ok"] is True
+    assert activated["location_pack_id"] == "blackout_phoenix"
+    assert activated["snapshot"]["app"]["location_label"] == "Phoenix, AZ"
+    assert activated["snapshot"]["app"]["hazard_type"] == "heat + blackout"
+    assert activated["snapshot"]["app"]["site_type"] == "cooling center"
+    assert activated["snapshot"]["counts"]["signals_total"] == 30
 
 
 def test_care_continuity_fields_persist_into_snapshot():

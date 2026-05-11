@@ -21,6 +21,11 @@ begin
   insert into public.relay_proof_runs (
     run_slug,
     scenario_id,
+    location_pack_id,
+    location_label,
+    hazard_type,
+    site_type,
+    context_mode,
     model_mode,
     gemma_model,
     source_report_count,
@@ -35,6 +40,11 @@ begin
   select
     payload->'run'->>'run_slug',
     payload->'run'->>'scenario_id',
+    payload->'run'->>'location_pack_id',
+    payload->'run'->>'location_label',
+    payload->'run'->>'hazard_type',
+    payload->'run'->>'site_type',
+    payload->'run'->>'context_mode',
     payload->'run'->>'model_mode',
     payload->'run'->>'gemma_model',
     (payload->'run'->>'source_report_count')::integer,
@@ -47,6 +57,11 @@ begin
     now()
   on conflict (run_slug) do update set
     scenario_id = excluded.scenario_id,
+    location_pack_id = excluded.location_pack_id,
+    location_label = excluded.location_label,
+    hazard_type = excluded.hazard_type,
+    site_type = excluded.site_type,
+    context_mode = excluded.context_mode,
     model_mode = excluded.model_mode,
     gemma_model = excluded.gemma_model,
     source_report_count = excluded.source_report_count,

@@ -17,6 +17,13 @@ export type ProofSnapshot = {
   run_slug: string;
   generated_at: string;
   scenario_id: string;
+  location?: {
+    pack_id: string;
+    label: string;
+    hazard_type: string;
+    site_type: string;
+    context_mode: string;
+  };
   model_mode: string;
   gemma_model: string;
   counts: {
@@ -41,6 +48,13 @@ export const fallbackProofSnapshot: ProofSnapshot = {
   run_slug: "relay-care-continuity-replay",
   generated_at: "2026-05-05T08:12:00Z",
   scenario_id: "wildfire_community_center",
+  location: {
+    pack_id: "wildfire_santa_rosa",
+    label: "Santa Rosa, CA",
+    hazard_type: "wildfire",
+    site_type: "evacuation shelter",
+    context_mode: "fixture",
+  },
   model_mode: "replay",
   gemma_model: "gemma4:e2b",
   counts: {

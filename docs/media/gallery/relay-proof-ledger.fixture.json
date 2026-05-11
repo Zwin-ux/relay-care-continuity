@@ -1,7 +1,14 @@
 {
   "run_slug": "relay-care-continuity-replay",
-  "generated_at": "2026-05-06T02:12:24.112138Z",
+  "generated_at": "2026-05-11T07:51:18.209758Z",
   "scenario_id": "wildfire_community_center",
+  "location": {
+    "pack_id": "wildfire_santa_rosa",
+    "label": "Santa Rosa, CA",
+    "hazard_type": "wildfire",
+    "site_type": "evacuation shelter",
+    "context_mode": "fixture"
+  },
   "model_mode": "replay",
   "gemma_model": "gemma4:e2b",
   "counts": {
@@ -20,7 +27,7 @@
   "continuity_items": [
     {
       "continuity_item_id": "public_information_review",
-      "incident_id": "inc_6f15c1aea7",
+      "incident_id": "inc_2836c1ae28",
       "title": "Public information review",
       "care_domain": "public_information",
       "care_label": "Public information",
@@ -38,7 +45,7 @@
     },
     {
       "continuity_item_id": "volunteer_capacity",
-      "incident_id": "inc_91feba7020",
+      "incident_id": "inc_f661e32dae",
       "title": "Volunteer capacity",
       "care_domain": "volunteer_capacity",
       "care_label": "Volunteer capacity",
@@ -56,7 +63,7 @@
     },
     {
       "continuity_item_id": "power-dependent_care",
-      "incident_id": "inc_70e7f38cd1",
+      "incident_id": "inc_616558564c",
       "title": "Power-dependent care",
       "care_domain": "oxygen_power",
       "care_label": "Oxygen / power",
@@ -76,7 +83,7 @@
     },
     {
       "continuity_item_id": "mobility_transport",
-      "incident_id": "inc_62eedc2953",
+      "incident_id": "inc_6eb89b178f",
       "title": "Mobility transport",
       "care_domain": "mobility_transport",
       "care_label": "Mobility",
@@ -94,7 +101,7 @@
     },
     {
       "continuity_item_id": "hazard_access_review",
-      "incident_id": "inc_6ccf305e7d",
+      "incident_id": "inc_a9e4e2636a",
       "title": "Hazard access review",
       "care_domain": "hazard_access",
       "care_label": "Hazard access",
@@ -112,7 +119,7 @@
     },
     {
       "continuity_item_id": "shelter_comfort_supplies",
-      "incident_id": "inc_7883cbe2d0",
+      "incident_id": "inc_97994541fa",
       "title": "Shelter comfort supplies",
       "care_domain": "shelter_comfort",
       "care_label": "Shelter comfort",
@@ -130,7 +137,7 @@
     },
     {
       "continuity_item_id": "medication_continuity",
-      "incident_id": "inc_224fa02823",
+      "incident_id": "inc_b1a514a2bf",
       "title": "Medication continuity",
       "care_domain": "medication",
       "care_label": "Medication",
@@ -157,7 +164,7 @@
     },
     {
       "continuity_item_id": "infant_supply_continuity",
-      "incident_id": "inc_315bfbde13",
+      "incident_id": "inc_10b5832a90",
       "title": "Infant supply continuity",
       "care_domain": "infant_supply",
       "care_label": "Infant supply",
@@ -177,7 +184,7 @@
     },
     {
       "continuity_item_id": "smoke_and_access_review",
-      "incident_id": "inc_540fb10c57",
+      "incident_id": "inc_aa2ad6801f",
       "title": "Smoke / access review",
       "care_domain": "hazard_access",
       "care_label": "Hazard access",

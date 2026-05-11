@@ -13,6 +13,7 @@ from ..models import Incident, IncidentEvidence, IncidentSignal, ModelRun, Signa
 from ..schemas import TriageOutput
 from .audit_service import emit_event
 from .board_service import lane_for_output
+from .location_pack_service import active_location_pack_for_scenario
 
 
 def read_json(path: Path) -> Any:
@@ -36,6 +37,7 @@ async def run_model_for_signal(signal: Signal) -> tuple[str, dict[str, Any], str
     if mode != "ollama":
         raise HTTPException(400, f"Unsupported MODEL_MODE={mode}")
 
+    location_pack = active_location_pack_for_scenario(signal.scenario)
     prompt = (
         "You are Gemma triage inside RELAY Care Continuity. Return only one JSON object. "
         "Do not include markdown. Do not give medical treatment advice. Treat the input as an unverified source report, not fact. "
@@ -59,6 +61,13 @@ async def run_model_for_signal(signal: Signal) -> tuple[str, dict[str, Any], str
         '  "conflicts": ["string"],\n'
         '  "handoff_status": "blocked_missing_info | blocked_unsafe_claim | ready_for_review"\n'
         "}\n\n"
+        "Active local context:\n"
+        f"- Location: {location_pack['location']['display']}\n"
+        f"- Hazard type: {location_pack['hazard_type']}\n"
+        f"- Site type: {location_pack['site_type']}\n"
+        f"- Allowed care domains: {', '.join(location_pack.get('care_domains', []))}\n"
+        f"- Required fields by care domain: {json.dumps(location_pack.get('required_fields', {}))}\n"
+        f"- Safety boundaries: {' '.join(location_pack.get('boundaries', []))}\n\n"
         f"Signal source: {signal.source}\nSignal text: {signal.text}\nLocation hint: {signal.location_hint}"
     )
     base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
@@ -97,6 +106,7 @@ def create_incident_from_triage(session: Session, signal: Signal, output: Triage
         handoff_status=output.handoff_status,
         state=state,
         lane=lane,
+        scenario=signal.scenario,
     )
     session.add(incident)
     session.commit()

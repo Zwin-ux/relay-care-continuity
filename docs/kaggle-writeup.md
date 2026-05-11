@@ -9,7 +9,7 @@ RELAY Care Continuity is a reviewer workspace for evacuation shelters operating 
 The product is deliberately not an autonomous emergency response system. RELAY does not dispatch responders, give medical advice, verify real-world facts, or replace incident-command software. It shows what the system actually has: source reports, grouped draft items, missing required fields, unsafe claims held for review, and an audit receipt for reviewer actions.
 
 Live preview: https://web-zwin-uxs-projects.vercel.app
-Latest preview for final review: https://web-8ha9fvnv1-zwin-uxs-projects.vercel.app
+Latest preview for final review: https://web-cbmy5zxr2-zwin-uxs-projects.vercel.app
 Proof ledger: https://web-zwin-uxs-projects.vercel.app/proof
 Public code: https://github.com/Zwin-ux/relay-care-continuity
 

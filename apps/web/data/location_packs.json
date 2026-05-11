@@ -1,0 +1,89 @@
+[
+  {
+    "id": "wildfire_santa_rosa",
+    "label": "Santa Rosa wildfire shelter",
+    "short_label": "Wildfire shelter",
+    "hazard_type": "wildfire",
+    "site_type": "evacuation shelter",
+    "scenario_id": "wildfire_community_center",
+    "location": {
+      "city": "Santa Rosa",
+      "region": "California",
+      "display": "Santa Rosa, CA"
+    },
+    "public_context": [
+      {
+        "source": "CDC wildfire safety",
+        "label": "Smoke-sensitive groups",
+        "body": "Wildfire smoke can affect children, pregnancy, and people with asthma, COPD, heart disease, or diabetes.",
+        "context_only": true
+      },
+      {
+        "source": "Disaster medical-needs guidance",
+        "label": "Continuity risk",
+        "body": "Evacuation planning should account for medications, power-dependent equipment, oxygen, and medical supplies.",
+        "context_only": true
+      }
+    ],
+    "care_domains": ["medication", "oxygen_power", "infant_supply", "mobility_transport", "hazard_access", "public_information"],
+    "required_fields": {
+      "medication": ["recipient_identity", "pickup_location", "authorized_pickup_contact"],
+      "oxygen_power": ["device_type", "battery_runtime", "charging_location", "backup_power_source"]
+    },
+    "boundaries": ["No live dispatch connection.", "Public context is not source evidence.", "Unsafe health claims stay held for review."]
+  },
+  {
+    "id": "flood_asheville",
+    "label": "Asheville flood shelter",
+    "short_label": "Flood shelter",
+    "hazard_type": "flood",
+    "site_type": "temporary shelter",
+    "scenario_id": "wildfire_community_center",
+    "location": {
+      "city": "Asheville",
+      "region": "North Carolina",
+      "display": "Asheville, NC"
+    },
+    "public_context": [
+      {
+        "source": "Shelter continuity context",
+        "label": "Flood access constraints",
+        "body": "Flood response can interrupt transport, medication access, charging, and safe route confirmation for shelter residents.",
+        "context_only": true
+      }
+    ],
+    "care_domains": ["medication", "oxygen_power", "mobility_transport", "infant_supply", "hazard_access", "public_information"],
+    "required_fields": {
+      "medication": ["recipient_identity", "pharmacy_or_pickup_location", "safe_pickup_route"],
+      "oxygen_power": ["device_type", "battery_runtime", "charging_location", "backup_power_source"]
+    },
+    "boundaries": ["Flood context is not proof that a source report is true.", "Road or water-safety claims require local review.", "No live dispatch connection."]
+  },
+  {
+    "id": "blackout_phoenix",
+    "label": "Phoenix blackout cooling center",
+    "short_label": "Blackout cooling center",
+    "hazard_type": "heat + blackout",
+    "site_type": "cooling center",
+    "scenario_id": "wildfire_community_center",
+    "location": {
+      "city": "Phoenix",
+      "region": "Arizona",
+      "display": "Phoenix, AZ"
+    },
+    "public_context": [
+      {
+        "source": "Cooling-center continuity context",
+        "label": "Heat and power stress",
+        "body": "Blackouts and heat can create continuity risks for charging, refrigeration, oxygen concentrators, mobility, and transportation.",
+        "context_only": true
+      }
+    ],
+    "care_domains": ["oxygen_power", "medication", "shelter_comfort", "mobility_transport", "public_information"],
+    "required_fields": {
+      "oxygen_power": ["device_type", "battery_runtime", "charging_location", "backup_power_source"],
+      "medication": ["recipient_identity", "refrigeration_need", "pickup_or_storage_location"]
+    },
+    "boundaries": ["Cooling-center context is not source evidence.", "Health and medication claims stay held for review.", "No live dispatch connection."]
+  }
+]

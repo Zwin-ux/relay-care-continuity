@@ -2,6 +2,11 @@
   "run": {
     "run_slug": "relay-care-continuity-replay",
     "scenario_id": "wildfire_community_center",
+    "location_pack_id": "wildfire_santa_rosa",
+    "location_label": "Santa Rosa, CA",
+    "hazard_type": "wildfire",
+    "site_type": "evacuation shelter",
+    "context_mode": "fixture",
     "model_mode": "replay",
     "gemma_model": "gemma4:e2b",
     "source_report_count": 30,
@@ -19,17 +24,17 @@
   },
   "source_reports": [
     {
-      "source_report_id": "sig_c44bcba3ca",
+      "source_report_id": "sig_ddc9a94203",
       "source_type": "sms",
       "severity": "high",
       "care_domain": "medication",
       "state_label": "Grouped",
       "headline": "Source report: My grandparents are on Maple Ave and need medication picked up before tonight. Phones are dying.",
-      "location_label": "Community Center",
+      "location_label": "Maple Ave",
       "public_read": true
     },
     {
-      "source_report_id": "sig_9641df55db",
+      "source_report_id": "sig_66965a56a6",
       "source_type": "volunteer_note",
       "severity": "high",
       "care_domain": "infant_supply",
@@ -39,17 +44,17 @@
       "public_read": true
     },
     {
-      "source_report_id": "sig_91ab81f971",
+      "source_report_id": "sig_352ecfa99a",
       "source_type": "sms",
       "severity": "high",
       "care_domain": "hazard_access",
       "state_label": "Missing info",
       "headline": "Source report: Road blocked near Lincoln school entrance. Not sure if anyone is hurt.",
-      "location_label": "Community Center",
+      "location_label": "Lincoln school",
       "public_read": true
     },
     {
-      "source_report_id": "sig_881045610d",
+      "source_report_id": "sig_f88ae5605c",
       "source_type": "image_report",
       "severity": "low",
       "care_domain": "hazard_access",
@@ -59,17 +64,17 @@
       "public_read": true
     },
     {
-      "source_report_id": "sig_cf0a059ff6",
+      "source_report_id": "sig_cea97576c4",
       "source_type": "sms",
       "severity": "medium",
       "care_domain": "shelter_comfort",
       "state_label": "Missing info",
       "headline": "Source report: Heard the bridge is collapsing near 7th. Not confirmed, friend told me.",
-      "location_label": "Community Center",
+      "location_label": "7th",
       "public_read": true
     },
     {
-      "source_report_id": "sig_edf6112443",
+      "source_report_id": "sig_453db4f6f9",
       "source_type": "volunteer_note",
       "severity": "low",
       "care_domain": "volunteer_capacity",
@@ -79,37 +84,37 @@
       "public_read": true
     },
     {
-      "source_report_id": "sig_1383a76447",
+      "source_report_id": "sig_a127ce6b8f",
       "source_type": "sms",
       "severity": "low",
       "care_domain": "medication",
       "state_label": "Grouped",
       "headline": "Source report: Maple Ave seniors still need a pharmacy pickup. One person needs heart meds before evening.",
-      "location_label": "Community Center",
+      "location_label": "Maple Ave",
       "public_read": true
     },
     {
-      "source_report_id": "sig_b641236534",
+      "source_report_id": "sig_5357e01c2b",
       "source_type": "shelter_update",
       "severity": "medium",
       "care_domain": "oxygen_power",
       "state_label": "Grouped",
       "headline": "Source report: North gym has power strips but no working generator. People asking where they can charge phones.",
-      "location_label": "Community Center",
+      "location_label": "community center north gym",
       "public_read": true
     },
     {
-      "source_report_id": "sig_4754983fb5",
+      "source_report_id": "sig_e2ba84535d",
       "source_type": "sms",
       "severity": "high",
       "care_domain": "hazard_access",
       "state_label": "Grouped",
       "headline": "Source report: There is smoke behind Oak Apartments but no visible flames from the front lot.",
-      "location_label": "Community Center",
+      "location_label": "Oak Apartments",
       "public_read": true
     },
     {
-      "source_report_id": "sig_bca42f2b9d",
+      "source_report_id": "sig_45f7011091",
       "source_type": "volunteer_note",
       "severity": "low",
       "care_domain": "mobility_transport",
@@ -119,17 +124,17 @@
       "public_read": true
     },
     {
-      "source_report_id": "sig_8cd44b2185",
+      "source_report_id": "sig_463cd1b636",
       "source_type": "sms",
       "severity": "critical",
       "care_domain": "oxygen_power",
       "state_label": "Grouped",
       "headline": "Source report: Can someone check on Mrs. Alvarez at 18 Maple? Her oxygen machine battery is low.",
-      "location_label": "Community Center",
+      "location_label": "18 Maple Ave",
       "public_read": true
     },
     {
-      "source_report_id": "sig_95b80b0e5a",
+      "source_report_id": "sig_b085d632dc",
       "source_type": "image_report",
       "severity": "high",
       "care_domain": "infant_supply",
@@ -139,7 +144,7 @@
       "public_read": true
     },
     {
-      "source_report_id": "sig_a0cf1406d7",
+      "source_report_id": "sig_13de23b908",
       "source_type": "sms",
       "severity": "medium",
       "care_domain": "public_information",
@@ -149,37 +154,37 @@
       "public_read": true
     },
     {
-      "source_report_id": "sig_8a749e8c4e",
+      "source_report_id": "sig_a2424d0e51",
       "source_type": "volunteer_note",
       "severity": "low",
       "care_domain": "hazard_access",
       "state_label": "Grouped",
       "headline": "Source report: East lot entrance is clear. I can direct traffic if needed until 6pm.",
-      "location_label": "Community Center",
+      "location_label": "east lot",
       "public_read": true
     },
     {
-      "source_report_id": "sig_fc05cbcefe",
+      "source_report_id": "sig_1d6cede69d",
       "source_type": "sms",
       "severity": "medium",
       "care_domain": "hazard_access",
       "state_label": "Grouped",
       "headline": "Source report: Power is out on Pine and 3rd. Traffic lights are dark.",
-      "location_label": "Community Center",
+      "location_label": "Pine and 3rd",
       "public_read": true
     },
     {
-      "source_report_id": "sig_b99ad18774",
+      "source_report_id": "sig_429372e896",
       "source_type": "sms",
       "severity": "critical",
       "care_domain": "hazard_access",
       "state_label": "Grouped",
       "headline": "Source report: A resident says wires are down near the alley behind Lincoln school. They are sparking.",
-      "location_label": "Community Center",
+      "location_label": "Lincoln school alley",
       "public_read": true
     },
     {
-      "source_report_id": "sig_9ea64a4462",
+      "source_report_id": "sig_3c703a1818",
       "source_type": "volunteer_note",
       "severity": "high",
       "care_domain": "infant_supply",
@@ -189,27 +194,27 @@
       "public_read": true
     },
     {
-      "source_report_id": "sig_b149aa1673",
+      "source_report_id": "sig_6c0dbfcb4b",
       "source_type": "sms",
       "severity": "low",
       "care_domain": "mobility_transport",
       "state_label": "Grouped",
       "headline": "Source report: Do we know if the evacuation bus is stopping at the library? My neighbor cannot walk far.",
-      "location_label": "Community Center",
+      "location_label": "library",
       "public_read": true
     },
     {
-      "source_report_id": "sig_389446622b",
+      "source_report_id": "sig_55b8fb46ab",
       "source_type": "sms",
       "severity": "high",
       "care_domain": "hazard_access",
       "state_label": "Duplicate",
       "headline": "Source report: Blocked road by Lincoln school again, tree across both lanes, cars turning around.",
-      "location_label": "Community Center",
+      "location_label": "Lincoln school",
       "public_read": true
     },
     {
-      "source_report_id": "sig_12b807a21f",
+      "source_report_id": "sig_9037437ba1",
       "source_type": "volunteer_note",
       "severity": "low",
       "care_domain": "shelter_comfort",
@@ -219,7 +224,7 @@
       "public_read": true
     },
     {
-      "source_report_id": "sig_26b6fda093",
+      "source_report_id": "sig_eb7f5257d9",
       "source_type": "sms",
       "severity": "medium",
       "care_domain": "public_information",
@@ -229,7 +234,7 @@
       "public_read": true
     },
     {
-      "source_report_id": "sig_ef5699e513",
+      "source_report_id": "sig_6bc3e05dc5",
       "source_type": "volunteer_note",
       "severity": "low",
       "care_domain": "volunteer_capacity",
@@ -239,17 +244,17 @@
       "public_read": true
     },
     {
-      "source_report_id": "sig_ada37c8623",
+      "source_report_id": "sig_af1cd32e1e",
       "source_type": "sms",
       "severity": "critical",
       "care_domain": "hazard_access",
       "state_label": "Grouped",
       "headline": "Source report: Man in a blue truck offered to take people through the closed fire road. Sounds unsafe.",
-      "location_label": "Community Center",
+      "location_label": "closed fire road",
       "public_read": true
     },
     {
-      "source_report_id": "sig_9291884d2d",
+      "source_report_id": "sig_165d8f81ed",
       "source_type": "image_report",
       "severity": "low",
       "care_domain": "shelter_comfort",
@@ -259,27 +264,27 @@
       "public_read": true
     },
     {
-      "source_report_id": "sig_d3bb048bd8",
+      "source_report_id": "sig_dc392c29fe",
       "source_type": "sms",
       "severity": "low",
       "care_domain": "shelter_comfort",
       "state_label": "Grouped",
       "headline": "Source report: Need blankets in the quiet room. Older adults are cold because heat is off.",
-      "location_label": "Community Center",
+      "location_label": "Room C",
       "public_read": true
     },
     {
-      "source_report_id": "sig_f81ae2999d",
+      "source_report_id": "sig_af6ae710fa",
       "source_type": "volunteer_note",
       "severity": "high",
       "care_domain": "hazard_access",
       "state_label": "Grouped",
       "headline": "Source report: Delivery driver reports south entrance has smoke drifting across it. Visibility changes every few minutes.",
-      "location_label": "Community Center",
+      "location_label": "south entrance",
       "public_read": true
     },
     {
-      "source_report_id": "sig_4ab176e6bf",
+      "source_report_id": "sig_55785bb158",
       "source_type": "sms",
       "severity": "low",
       "care_domain": "shelter_comfort",
@@ -289,17 +294,17 @@
       "public_read": true
     },
     {
-      "source_report_id": "sig_7316e70823",
+      "source_report_id": "sig_980f3773c1",
       "source_type": "sms",
       "severity": "critical",
       "care_domain": "medication",
       "state_label": "Unsafe claim",
       "headline": "Unsafe medication claim suppressed for review.",
-      "location_label": "Community Center",
+      "location_label": "Maple Ave",
       "public_read": true
     },
     {
-      "source_report_id": "sig_90b0fb9c43",
+      "source_report_id": "sig_ef9a1e144e",
       "source_type": "volunteer_note",
       "severity": "low",
       "care_domain": "mobility_transport",
@@ -309,7 +314,7 @@
       "public_read": true
     },
     {
-      "source_report_id": "sig_658c0e9de3",
+      "source_report_id": "sig_9e96124d62",
       "source_type": "sms",
       "severity": "high",
       "care_domain": "infant_supply",
@@ -322,7 +327,7 @@
   "continuity_items": [
     {
       "continuity_item_id": "public_information_review",
-      "incident_id": "inc_6f15c1aea7",
+      "incident_id": "inc_2836c1ae28",
       "title": "Public information review",
       "care_domain": "public_information",
       "care_label": "Public information",
@@ -340,7 +345,7 @@
     },
     {
       "continuity_item_id": "volunteer_capacity",
-      "incident_id": "inc_91feba7020",
+      "incident_id": "inc_f661e32dae",
       "title": "Volunteer capacity",
       "care_domain": "volunteer_capacity",
       "care_label": "Volunteer capacity",
@@ -358,7 +363,7 @@
     },
     {
       "continuity_item_id": "power-dependent_care",
-      "incident_id": "inc_70e7f38cd1",
+      "incident_id": "inc_616558564c",
       "title": "Power-dependent care",
       "care_domain": "oxygen_power",
       "care_label": "Oxygen / power",
@@ -378,7 +383,7 @@
     },
     {
       "continuity_item_id": "mobility_transport",
-      "incident_id": "inc_62eedc2953",
+      "incident_id": "inc_6eb89b178f",
       "title": "Mobility transport",
       "care_domain": "mobility_transport",
       "care_label": "Mobility",
@@ -396,7 +401,7 @@
     },
     {
       "continuity_item_id": "hazard_access_review",
-      "incident_id": "inc_6ccf305e7d",
+      "incident_id": "inc_a9e4e2636a",
       "title": "Hazard access review",
       "care_domain": "hazard_access",
       "care_label": "Hazard access",
@@ -414,7 +419,7 @@
     },
     {
       "continuity_item_id": "shelter_comfort_supplies",
-      "incident_id": "inc_7883cbe2d0",
+      "incident_id": "inc_97994541fa",
       "title": "Shelter comfort supplies",
       "care_domain": "shelter_comfort",
       "care_label": "Shelter comfort",
@@ -432,7 +437,7 @@
     },
     {
       "continuity_item_id": "medication_continuity",
-      "incident_id": "inc_224fa02823",
+      "incident_id": "inc_b1a514a2bf",
       "title": "Medication continuity",
       "care_domain": "medication",
       "care_label": "Medication",
@@ -459,7 +464,7 @@
     },
     {
       "continuity_item_id": "infant_supply_continuity",
-      "incident_id": "inc_315bfbde13",
+      "incident_id": "inc_10b5832a90",
       "title": "Infant supply continuity",
       "care_domain": "infant_supply",
       "care_label": "Infant supply",
@@ -479,7 +484,7 @@
     },
     {
       "continuity_item_id": "smoke_and_access_review",
-      "incident_id": "inc_540fb10c57",
+      "incident_id": "inc_aa2ad6801f",
       "title": "Smoke / access review",
       "care_domain": "hazard_access",
       "care_label": "Hazard access",
@@ -498,273 +503,273 @@
   ],
   "events": [
     {
-      "event_id": "evt_2005e31989",
-      "incident_id": "inc_5ee9866f2c",
+      "event_id": "evt_952de6e4b6",
+      "incident_id": "inc_3b61beeafd",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.184928",
+      "event_created_at": "2026-05-11T07:51:17.515724",
       "public_read": true
     },
     {
-      "event_id": "evt_19c8f2f32a",
-      "incident_id": "inc_315bfbde13",
+      "event_id": "evt_1dbb07ecb9",
+      "incident_id": "inc_10b5832a90",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.211627",
+      "event_created_at": "2026-05-11T07:51:17.536453",
       "public_read": true
     },
     {
-      "event_id": "evt_a548244086",
-      "incident_id": "inc_aeeb562d00",
+      "event_id": "evt_dc97bb5a24",
+      "incident_id": "inc_7e7d1d8da3",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.232536",
+      "event_created_at": "2026-05-11T07:51:17.552601",
       "public_read": true
     },
     {
-      "event_id": "evt_0e6d4b1feb",
-      "incident_id": "inc_c8c632dfa6",
+      "event_id": "evt_5f9030908c",
+      "incident_id": "inc_0ce212b0f4",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.253384",
+      "event_created_at": "2026-05-11T07:51:17.567656",
       "public_read": true
     },
     {
-      "event_id": "evt_c71cc47e49",
-      "incident_id": "inc_6f15c1aea7",
+      "event_id": "evt_c25419bf38",
+      "incident_id": "inc_2836c1ae28",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.277434",
+      "event_created_at": "2026-05-11T07:51:17.583785",
       "public_read": true
     },
     {
-      "event_id": "evt_96e7e020f3",
-      "incident_id": "inc_91feba7020",
+      "event_id": "evt_a2d83ed7ce",
+      "incident_id": "inc_f661e32dae",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.299561",
+      "event_created_at": "2026-05-11T07:51:17.598784",
       "public_read": true
     },
     {
-      "event_id": "evt_f27347082c",
-      "incident_id": "inc_78a9d04965",
+      "event_id": "evt_b874534128",
+      "incident_id": "inc_dfbe3f89bf",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.318650",
+      "event_created_at": "2026-05-11T07:51:17.616859",
       "public_read": true
     },
     {
-      "event_id": "evt_88e6fe5f5a",
-      "incident_id": "inc_70e7f38cd1",
+      "event_id": "evt_19775ccc52",
+      "incident_id": "inc_616558564c",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.339735",
+      "event_created_at": "2026-05-11T07:51:17.633000",
       "public_read": true
     },
     {
-      "event_id": "evt_1974289a68",
-      "incident_id": "inc_540fb10c57",
+      "event_id": "evt_0968c1d742",
+      "incident_id": "inc_aa2ad6801f",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.361695",
+      "event_created_at": "2026-05-11T07:51:17.649154",
       "public_read": true
     },
     {
-      "event_id": "evt_bdbd44046f",
-      "incident_id": "inc_62eedc2953",
+      "event_id": "evt_2447547060",
+      "incident_id": "inc_6eb89b178f",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.384541",
+      "event_created_at": "2026-05-11T07:51:17.665046",
       "public_read": true
     },
     {
-      "event_id": "evt_020ce8e09b",
-      "incident_id": "inc_baf91c6903",
+      "event_id": "evt_2d7dca747b",
+      "incident_id": "inc_518012f56f",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.406268",
+      "event_created_at": "2026-05-11T07:51:17.683556",
       "public_read": true
     },
     {
-      "event_id": "evt_f00e498b97",
-      "incident_id": "inc_7fdaa7ffea",
+      "event_id": "evt_c596d2afd4",
+      "incident_id": "inc_f11b4e8128",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.430272",
+      "event_created_at": "2026-05-11T07:51:17.702621",
       "public_read": true
     },
     {
-      "event_id": "evt_7687107e6d",
-      "incident_id": "inc_b8385587fa",
+      "event_id": "evt_d1cbf80bce",
+      "incident_id": "inc_2cef38da45",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.451098",
+      "event_created_at": "2026-05-11T07:51:17.720952",
       "public_read": true
     },
     {
-      "event_id": "evt_6619821d09",
-      "incident_id": "inc_6ccf305e7d",
+      "event_id": "evt_728d2ecb77",
+      "incident_id": "inc_a9e4e2636a",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.470036",
+      "event_created_at": "2026-05-11T07:51:17.739951",
       "public_read": true
     },
     {
-      "event_id": "evt_65b16834cf",
-      "incident_id": "inc_57a43dec82",
+      "event_id": "evt_116ce8d1ba",
+      "incident_id": "inc_4cf2f5347e",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.492483",
+      "event_created_at": "2026-05-11T07:51:17.760237",
       "public_read": true
     },
     {
-      "event_id": "evt_ae63391995",
-      "incident_id": "inc_8c4147e66d",
+      "event_id": "evt_f5e126262e",
+      "incident_id": "inc_8139cb380a",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.536453",
+      "event_created_at": "2026-05-11T07:51:17.780063",
       "public_read": true
     },
     {
-      "event_id": "evt_8b4d4be00c",
-      "incident_id": "inc_8f361227e4",
+      "event_id": "evt_bc6e007091",
+      "incident_id": "inc_f06533d19e",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.558454",
+      "event_created_at": "2026-05-11T07:51:17.798082",
       "public_read": true
     },
     {
-      "event_id": "evt_810e36925c",
-      "incident_id": "inc_9c84a7caf8",
+      "event_id": "evt_ee14db234c",
+      "incident_id": "inc_fc79bae834",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.580535",
+      "event_created_at": "2026-05-11T07:51:17.815424",
       "public_read": true
     },
     {
-      "event_id": "evt_b72f49a03b",
-      "incident_id": "inc_e420080283",
+      "event_id": "evt_6c23c40e68",
+      "incident_id": "inc_9d3b41da98",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.600750",
+      "event_created_at": "2026-05-11T07:51:17.832439",
       "public_read": true
     },
     {
-      "event_id": "evt_e064e16675",
-      "incident_id": "inc_7883cbe2d0",
+      "event_id": "evt_7c075617be",
+      "incident_id": "inc_97994541fa",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.621186",
+      "event_created_at": "2026-05-11T07:51:17.849243",
       "public_read": true
     },
     {
-      "event_id": "evt_2756378b2f",
-      "incident_id": "inc_6f471bb339",
+      "event_id": "evt_e61c17fe20",
+      "incident_id": "inc_0a2a584dc9",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.642730",
+      "event_created_at": "2026-05-11T07:51:17.865209",
       "public_read": true
     },
     {
-      "event_id": "evt_538b8889b9",
-      "incident_id": "inc_bbc35cd91f",
+      "event_id": "evt_8bd6182f35",
+      "incident_id": "inc_086d8ac08a",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.662164",
+      "event_created_at": "2026-05-11T07:51:17.881019",
       "public_read": true
     },
     {
-      "event_id": "evt_d87f30a3b5",
-      "incident_id": "inc_d17150391c",
+      "event_id": "evt_6875c06fab",
+      "incident_id": "inc_5ef56c4111",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.683525",
+      "event_created_at": "2026-05-11T07:51:17.898020",
       "public_read": true
     },
     {
-      "event_id": "evt_d23a4ad7e2",
-      "incident_id": "inc_00ea724e82",
+      "event_id": "evt_df7c2fe9e2",
+      "incident_id": "inc_8e0b0dfbc1",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.701085",
+      "event_created_at": "2026-05-11T07:51:17.912635",
       "public_read": true
     },
     {
-      "event_id": "evt_7ace64023a",
-      "incident_id": "inc_06f2866344",
+      "event_id": "evt_72df019c0c",
+      "incident_id": "inc_015f54723f",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.720091",
+      "event_created_at": "2026-05-11T07:51:17.928346",
       "public_read": true
     },
     {
-      "event_id": "evt_e26cb8feff",
-      "incident_id": "inc_c56c5439fd",
+      "event_id": "evt_043e977de6",
+      "incident_id": "inc_752a422c83",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.742195",
+      "event_created_at": "2026-05-11T07:51:17.944616",
       "public_read": true
     },
     {
-      "event_id": "evt_47bd2708da",
-      "incident_id": "inc_0b17b29fb8",
+      "event_id": "evt_10fdd86fd0",
+      "incident_id": "inc_c453e5b1c0",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.760815",
+      "event_created_at": "2026-05-11T07:51:17.962434",
       "public_read": true
     },
     {
-      "event_id": "evt_c2b03ca7d5",
-      "incident_id": "inc_224fa02823",
+      "event_id": "evt_3a27a43860",
+      "incident_id": "inc_b1a514a2bf",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.781932",
+      "event_created_at": "2026-05-11T07:51:17.978947",
       "public_read": true
     },
     {
-      "event_id": "evt_6279b92485",
-      "incident_id": "inc_e68bcb5514",
+      "event_id": "evt_add659b9d7",
+      "incident_id": "inc_85d8e8d079",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.802660",
+      "event_created_at": "2026-05-11T07:51:17.994795",
       "public_read": true
     },
     {
-      "event_id": "evt_66fc9c4aa3",
-      "incident_id": "inc_7a4ed04006",
+      "event_id": "evt_aa67955a5b",
+      "incident_id": "inc_8059b57861",
       "event_type": "model_triage",
       "actor": "gemma",
       "note_redacted": "Structured signal into incident",
-      "event_created_at": "2026-05-06T02:12:23.827356",
+      "event_created_at": "2026-05-11T07:51:18.009874",
       "public_read": true
     }
   ],
@@ -794,8 +799,15 @@
     "run_slug": "relay-care-continuity-replay",
     "snapshot_json": {
       "run_slug": "relay-care-continuity-replay",
-      "generated_at": "2026-05-06T02:12:24.112138Z",
+      "generated_at": "2026-05-11T07:51:18.209758Z",
       "scenario_id": "wildfire_community_center",
+      "location": {
+        "pack_id": "wildfire_santa_rosa",
+        "label": "Santa Rosa, CA",
+        "hazard_type": "wildfire",
+        "site_type": "evacuation shelter",
+        "context_mode": "fixture"
+      },
       "model_mode": "replay",
       "gemma_model": "gemma4:e2b",
       "counts": {
@@ -814,7 +826,7 @@
       "continuity_items": [
         {
           "continuity_item_id": "public_information_review",
-          "incident_id": "inc_6f15c1aea7",
+          "incident_id": "inc_2836c1ae28",
           "title": "Public information review",
           "care_domain": "public_information",
           "care_label": "Public information",
@@ -832,7 +844,7 @@
         },
         {
           "continuity_item_id": "volunteer_capacity",
-          "incident_id": "inc_91feba7020",
+          "incident_id": "inc_f661e32dae",
           "title": "Volunteer capacity",
           "care_domain": "volunteer_capacity",
           "care_label": "Volunteer capacity",
@@ -850,7 +862,7 @@
         },
         {
           "continuity_item_id": "power-dependent_care",
-          "incident_id": "inc_70e7f38cd1",
+          "incident_id": "inc_616558564c",
           "title": "Power-dependent care",
           "care_domain": "oxygen_power",
           "care_label": "Oxygen / power",
@@ -870,7 +882,7 @@
         },
         {
           "continuity_item_id": "mobility_transport",
-          "incident_id": "inc_62eedc2953",
+          "incident_id": "inc_6eb89b178f",
           "title": "Mobility transport",
           "care_domain": "mobility_transport",
           "care_label": "Mobility",
@@ -888,7 +900,7 @@
         },
         {
           "continuity_item_id": "hazard_access_review",
-          "incident_id": "inc_6ccf305e7d",
+          "incident_id": "inc_a9e4e2636a",
           "title": "Hazard access review",
           "care_domain": "hazard_access",
           "care_label": "Hazard access",
@@ -906,7 +918,7 @@
         },
         {
           "continuity_item_id": "shelter_comfort_supplies",
-          "incident_id": "inc_7883cbe2d0",
+          "incident_id": "inc_97994541fa",
           "title": "Shelter comfort supplies",
           "care_domain": "shelter_comfort",
           "care_label": "Shelter comfort",
@@ -924,7 +936,7 @@
         },
         {
           "continuity_item_id": "medication_continuity",
-          "incident_id": "inc_224fa02823",
+          "incident_id": "inc_b1a514a2bf",
           "title": "Medication continuity",
           "care_domain": "medication",
           "care_label": "Medication",
@@ -951,7 +963,7 @@
         },
         {
           "continuity_item_id": "infant_supply_continuity",
-          "incident_id": "inc_315bfbde13",
+          "incident_id": "inc_10b5832a90",
           "title": "Infant supply continuity",
           "care_domain": "infant_supply",
           "care_label": "Infant supply",
@@ -971,7 +983,7 @@
         },
         {
           "continuity_item_id": "smoke_and_access_review",
-          "incident_id": "inc_540fb10c57",
+          "incident_id": "inc_aa2ad6801f",
           "title": "Smoke / access review",
           "care_domain": "hazard_access",
           "care_label": "Hazard access",
