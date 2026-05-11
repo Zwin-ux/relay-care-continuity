@@ -8,7 +8,9 @@
   "location": {
     "city": "Asheville",
     "region": "North Carolina",
-    "display": "Asheville, NC"
+    "display": "Asheville, NC",
+    "lat": 35.5951,
+    "lon": -82.5515
   },
   "public_context": [
     {

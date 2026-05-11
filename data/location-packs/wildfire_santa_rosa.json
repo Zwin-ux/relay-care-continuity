@@ -8,7 +8,9 @@
   "location": {
     "city": "Santa Rosa",
     "region": "California",
-    "display": "Santa Rosa, CA"
+    "display": "Santa Rosa, CA",
+    "lat": 38.4405,
+    "lon": -122.7144
   },
   "public_context": [
     {

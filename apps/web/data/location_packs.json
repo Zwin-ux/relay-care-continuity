@@ -9,7 +9,9 @@
     "location": {
       "city": "Santa Rosa",
       "region": "California",
-      "display": "Santa Rosa, CA"
+      "display": "Santa Rosa, CA",
+      "lat": 38.4405,
+      "lon": -122.7144
     },
     "public_context": [
       {
@@ -42,7 +44,9 @@
     "location": {
       "city": "Asheville",
       "region": "North Carolina",
-      "display": "Asheville, NC"
+      "display": "Asheville, NC",
+      "lat": 35.5951,
+      "lon": -82.5515
     },
     "public_context": [
       {
@@ -69,7 +73,9 @@
     "location": {
       "city": "Phoenix",
       "region": "Arizona",
-      "display": "Phoenix, AZ"
+      "display": "Phoenix, AZ",
+      "lat": 33.4484,
+      "lon": -112.074
     },
     "public_context": [
       {

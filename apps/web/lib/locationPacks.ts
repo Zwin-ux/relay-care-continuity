@@ -20,6 +20,8 @@ export type LocationPack = {
     city: string;
     region: string;
     display: string;
+    lat: number;
+    lon: number;
   };
   public_context: LocationContextItem[];
   care_domains: CareDomain[];

@@ -121,7 +121,22 @@ test("loads reports into the care continuity workspace", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Care Continuity Ledger" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Continuity Review" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Required information" })).toBeVisible();
+  await expect(page.getByText(/Live context|Context fallback/)).toBeVisible();
+  await expect(page.getByLabel("Add local source report")).toBeVisible();
   await expect(page.getByText("Source report: My grandparents are on Maple Ave").first()).toBeVisible();
+});
+
+test("adds a local source report without treating it as verified truth", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await loadAndGroup(page);
+
+  await page.getByLabel("Add local source report").fill("shelter desk reports oxygen battery low near west entrance");
+  await page.getByRole("button", { name: "Add" }).click();
+
+  await expect(page.getByText("Local source report: shelter desk reports oxygen battery low near west entrance").first()).toBeVisible();
+  await expect(page.getByText("Local intake").first()).toBeVisible();
+  await expect(page.getByText("New").first()).toBeVisible();
+  await expect(page.getByText("Added reports stay unverified until grouping and required-field review run.")).toBeVisible();
 });
 
 test("selected medication continuity item shows missing fields and suppressed unsafe claims", async ({ page }) => {

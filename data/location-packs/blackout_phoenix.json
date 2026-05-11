@@ -8,7 +8,9 @@
   "location": {
     "city": "Phoenix",
     "region": "Arizona",
-    "display": "Phoenix, AZ"
+    "display": "Phoenix, AZ",
+    "lat": 33.4484,
+    "lon": -112.074
   },
   "public_context": [
     {

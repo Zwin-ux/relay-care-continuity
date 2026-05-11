@@ -13,6 +13,9 @@ export type CareDomain =
   | "shelter_comfort";
 
 export type SourceReport = Signal & {
+  signal_id?: string;
+  status?: "processed" | "raw";
+  created_at: string;
   severity: "critical" | "high" | "medium" | "low";
   sourceLabel: string;
   timeLabel: string;

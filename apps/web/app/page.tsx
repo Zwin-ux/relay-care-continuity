@@ -22,6 +22,7 @@ import {
   toSourceReports,
 } from "@/lib/careContinuity";
 import { getLocationPack, locationContextLine, locationPackFromSnapshot, locationPacks } from "@/lib/locationPacks";
+import { fallbackLiveContext, fetchLiveContext, LiveContextSignal } from "@/lib/liveContext";
 import { getActionAvailability } from "@/lib/relayActions";
 import { OperationReceipt, useRelayMutation, useRelaySnapshot } from "@/lib/relayHooks";
 import { relayTokens } from "@/lib/relayTokens";
@@ -38,13 +39,16 @@ export default function Page() {
   const [receipt, setReceipt] = useState<OperationReceipt | null>(null);
   const [blockedAction, setBlockedAction] = useState<{ title: string; reason: string; nextStep?: string } | null>(null);
   const [guidedStarting, setGuidedStarting] = useState(false);
+  const [liveContext, setLiveContext] = useState<LiveContextSignal>(() => fallbackLiveContext(getLocationPack()));
+  const [liveContextLoading, setLiveContextLoading] = useState(false);
+  const [manualReports, setManualReports] = useState<SourceReport[]>([]);
   const snapshotQuery = useRelaySnapshot(selectedId);
   const mutation = useRelayMutation({ selectedId, setSelectedId, setReceipt, setBlockedAction });
 
   const snapshot = snapshotQuery.data;
   const activeLocationPack = locationPackFromSnapshot(snapshot);
   const visibleContextItems = snapshot?.public_context?.length ? snapshot.public_context : activeLocationPack.public_context;
-  const reports = useMemo(() => toSourceReports(snapshot), [snapshot]);
+  const reports = useMemo(() => [...manualReports, ...toSourceReports(snapshot)], [manualReports, snapshot]);
   const visibleReports = useMemo(() => filterSourceReports(reports, filter), [reports, filter]);
   const tasks = useMemo(() => toContinuityTasks(snapshot), [snapshot]);
   const counts = useMemo(() => continuityCounts(tasks, reports), [tasks, reports]);
@@ -54,6 +58,26 @@ export default function Page() {
   useEffect(() => {
     if (!selectedId && tasks.length > 0) setSelectedId(preferredContinuityTaskId(tasks));
   }, [selectedId, tasks]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
+    setLiveContextLoading(true);
+    fetchLiveContext(activeLocationPack, controller.signal)
+      .then((context) => {
+        if (active) setLiveContext(context);
+      })
+      .catch((error) => {
+        if (active) setLiveContext(fallbackLiveContext(activeLocationPack, error instanceof Error ? error.message : "Live public alerts unavailable."));
+      })
+      .finally(() => {
+        if (active) setLiveContextLoading(false);
+      });
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [activeLocationPack.id]);
 
   const startGuidedReview = async () => {
     setGuidedStarting(true);
@@ -75,6 +99,34 @@ export default function Page() {
     mutation.mutate({ type, id });
   };
 
+  const addManualReport = (text: string) => {
+    const now = new Date().toISOString();
+    const domain = careDomainFromLocalReport(text);
+    const id = `manual-${Date.now()}`;
+    setManualReports((current) => [
+      {
+        id,
+        signal_id: id,
+        source: "local_intake",
+        text,
+        location_hint: activeLocationPack.location.display,
+        processed: false,
+        status: "raw",
+        created_at: now,
+        severity: "medium",
+        sourceLabel: "Local intake",
+        timeLabel: formatTime(now),
+        headline: reportHeadlineForLocalIntake(text),
+        locationLabel: activeLocationPack.location.display,
+        stateLabel: "New",
+        careDomain: domain,
+        careLabel: careLabel(domain),
+        tags: ["local intake", careLabel(domain).toLowerCase(), "needs review"],
+      },
+      ...current,
+    ]);
+  };
+
   const showReviewerLaunch = false;
 
   return (
@@ -88,6 +140,7 @@ export default function Page() {
         onRun={run}
       />
       <PublicContextStrip packLabel={activeLocationPack.location.display} contextLine={locationContextLine(activeLocationPack)} items={visibleContextItems} />
+      <ActivationSignalStrip context={liveContext} loading={liveContextLoading} />
 
       {snapshotQuery.error ? (
         <div className="mt-3">
@@ -104,7 +157,7 @@ export default function Page() {
           data-testid="care-continuity-workspace"
           className="mt-3 grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-auto min-[1120px]:grid-cols-[310px_minmax(500px,1fr)_390px]"
         >
-          <IncomingReports reports={visibleReports} allReports={reports} filter={filter} onFilterChange={setFilter} loading={snapshotQuery.isLoading} />
+          <IncomingReports reports={visibleReports} allReports={reports} filter={filter} onFilterChange={setFilter} onAddReport={addManualReport} loading={snapshotQuery.isLoading} />
           <CareContinuityLedger tasks={tasks} selectedId={selectedTask?.incident_id ?? null} onSelect={setSelectedId} loading={snapshotQuery.isLoading} />
           <ContinuityReview
             incident={reviewIncident}
@@ -119,6 +172,50 @@ export default function Page() {
       )}
     </div>
   );
+}
+
+function ActivationSignalStrip({ context, loading }: { context: LiveContextSignal; loading: boolean }) {
+  const primaryAlert = context.alerts[0];
+  return (
+    <section className="relay-panel mt-2 grid shrink-0 gap-2 px-3 py-2 min-[960px]:grid-cols-[220px_minmax(0,1fr)_260px] min-[960px]:items-center">
+      <div className="flex min-w-0 items-center gap-2">
+        <CdsTag tone={context.status === "live" ? "green" : "yellow"}>{context.status === "live" ? "Live context" : "Context fallback"}</CdsTag>
+        <p className="truncate text-sm font-semibold text-[#0a1b3d]">{context.location}</p>
+      </div>
+      <div className="min-w-0">
+        <p className="truncate text-sm font-medium text-[#0a1b3d]">
+          {loading ? "Checking public alerts..." : primaryAlert ? primaryAlert.headline : context.contextNotes[0]?.body}
+        </p>
+        <p className="mt-0.5 truncate text-xs font-medium text-[#536579]">
+          {context.sourceLabel}. Public context only; source reports still drive the ledger.
+        </p>
+      </div>
+      <div className="flex min-w-0 items-center justify-start gap-2 min-[960px]:justify-end">
+        <CdsTag tone={context.alerts.length ? "yellow" : "gray"}>{context.alerts.length} NWS alerts</CdsTag>
+        <a href="/proof" className="rounded-lg border border-[#d7dee9] bg-white px-3 py-2 text-xs font-semibold text-[#0a1b3d] hover:border-[#1652f0]">
+          Share proof brief
+        </a>
+      </div>
+    </section>
+  );
+}
+
+function careDomainFromLocalReport(text: string): CareDomain {
+  const lower = text.toLowerCase();
+  if (lower.includes("oxygen") || lower.includes("battery") || lower.includes("generator") || lower.includes("power")) return "oxygen_power";
+  if (lower.includes("formula") || lower.includes("diaper") || lower.includes("infant") || lower.includes("newborn")) return "infant_supply";
+  if (lower.includes("wheelchair") || lower.includes("transport") || lower.includes("bus") || lower.includes("ride")) return "mobility_transport";
+  if (lower.includes("smoke") || lower.includes("road") || lower.includes("blocked") || lower.includes("sparking") || lower.includes("wire")) return "hazard_access";
+  if (lower.includes("rumor") || lower.includes("announcement") || lower.includes("spanish") || lower.includes("update")) return "public_information";
+  if (lower.includes("volunteer") || lower.includes("driver") || lower.includes("available")) return "volunteer_capacity";
+  if (lower.includes("medication") || lower.includes("medicine") || lower.includes("pharmacy") || lower.includes("insulin")) return "medication";
+  return "shelter_comfort";
+}
+
+function reportHeadlineForLocalIntake(text: string) {
+  const trimmed = text.trim();
+  if (/^(source report|intake report|volunteer report|shelter report|radio report)/i.test(trimmed)) return trimmed;
+  return `Local source report: ${trimmed}`;
 }
 
 function continuityTaskToIncident(task: ContinuityTask): Incident {
@@ -400,12 +497,14 @@ function IncomingReports({
   allReports,
   filter,
   onFilterChange,
+  onAddReport,
   loading,
 }: {
   reports: SourceReport[];
   allReports: SourceReport[];
   filter: ReportFilter;
   onFilterChange: (filter: ReportFilter) => void;
+  onAddReport: (text: string) => void;
   loading: boolean;
 }) {
   const unsafe = allReports.filter((report) => report.stateLabel === "Unsafe claim").length;
@@ -440,6 +539,7 @@ function IncomingReports({
           ))}
         </div>
       </div>
+      <LocalReportIntake onAddReport={onAddReport} />
 
       <div className="thin-scroll min-h-0 flex-1 overflow-auto">
         {loading ? <LoadingState label="Loading source reports" /> : null}
@@ -477,6 +577,43 @@ function IncomingReports({
         ) : null}
       </div>
     </aside>
+  );
+}
+
+function LocalReportIntake({ onAddReport }: { onAddReport: (text: string) => void }) {
+  const [value, setValue] = useState("");
+  return (
+    <form
+      className="border-b border-[#d7dee9] bg-[#f8fafc] px-3 py-2"
+      onSubmit={(event) => {
+        event.preventDefault();
+        const text = value.trim();
+        if (!text) return;
+        onAddReport(text);
+        setValue("");
+      }}
+    >
+      <label htmlFor="local-source-report" className="text-xs font-semibold uppercase tracking-[0.02em] text-[#536579]">
+        Add local source report
+      </label>
+      <div className="mt-2 flex min-w-0 gap-2">
+        <input
+          id="local-source-report"
+          value={value}
+          onChange={(event) => setValue(event.target.value)}
+          placeholder="Example: shelter desk reports oxygen battery low"
+          className="min-w-0 flex-1 rounded-lg border border-[#d7dee9] bg-white px-3 py-2 text-sm text-[#0a1b3d] outline-none transition placeholder:text-[#7b8797] focus:border-[#1652f0] focus:ring-2 focus:ring-[#1652f0]/20"
+        />
+        <button
+          type="submit"
+          className="shrink-0 rounded-lg border border-[#1652f0] bg-[#1652f0] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#0f45d8] focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 disabled:border-[#b8c2d2] disabled:bg-[#d7dee9] disabled:text-[#536579]"
+          disabled={!value.trim()}
+        >
+          Add
+        </button>
+      </div>
+      <p className="mt-1 text-xs leading-5 text-[#536579]">Added reports stay unverified until grouping and required-field review run.</p>
+    </form>
   );
 }
 
