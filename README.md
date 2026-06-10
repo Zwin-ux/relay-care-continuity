@@ -2,6 +2,8 @@
 
 RELAY is a local-first reviewer workspace for evacuation shelters. It uses Gemma-style replay outputs, and optionally local Gemma through Ollama, to group messy wildfire reports into **Care Continuity Ledger** items: medication continuity, oxygen or power-dependent support, infant supplies, mobility transport, hazard access, public information review, and volunteer capacity.
 
+![Showcase](showcase/relay-care.gif)
+
 The current competition slice is intentionally narrow: one wildfire/community-center scenario, one continuity ledger, one review pane, and a handoff state that stays unavailable while required information or unsafe claims remain open.
 
 Replay uses mock data. No live dispatch or emergency-service connection.
