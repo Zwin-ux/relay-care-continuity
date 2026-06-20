@@ -1,25 +1,55 @@
 ﻿# RELAY Care Continuity
 
-RELAY is a local-first reviewer workspace for evacuation shelters. It uses Gemma-style replay outputs, and optionally local Gemma through Ollama, to group messy wildfire reports into **Care Continuity Ledger** items: medication continuity, oxygen or power-dependent support, infant supplies, mobility transport, hazard access, public information review, and volunteer capacity.
+RELAY is a reviewer workspace for evacuation-shelter report triage.
 
-![Showcase](showcase/relay-care.gif)
+It groups messy wildfire reports into a **Care Continuity Ledger** so a human reviewer can see medication continuity, oxygen or power-dependent support, infant supplies, mobility transport, hazard access, public-information review, volunteer capacity, missing fields, unsafe claims, and handoff state in one place.
 
-The current competition slice is intentionally narrow: one wildfire/community-center scenario, one continuity ledger, one review pane, and a handoff state that stays unavailable while required information or unsafe claims remain open.
+The public preview is intentionally narrow: one wildfire/community-center scenario, replayed Gemma-style outputs, one continuity ledger, one review pane, and a handoff state that stays unavailable while required information or unsafe claims remain open.
 
-Replay uses mock data. No live dispatch or emergency-service connection.
+[Live preview](https://web-zwin-uxs-projects.vercel.app) | [Proof ledger](https://web-zwin-uxs-projects.vercel.app/proof) | [Kaggle writeup draft](docs/kaggle-writeup.md) | [Technical proof](docs/technical-proof.md)
+
+![RELAY desktop preview](showcase/relay-care-desktop.png)
+
+Replay uses mock data. RELAY does not contact emergency services, dispatch responders, give medical advice, or make operational decisions.
+
+## Why Review This Repo
+
+- It has a specific public-safety workflow instead of a generic dashboard: source reports become continuity items, missing fields, unsafe-claim holds, and audit receipts.
+- The public demo is deterministic, so reviewers can inspect the product without relying on a live model.
+- The repo still includes an Ollama mode for local Gemma verification.
+- Supabase is used as a submission proof ledger, not as a hidden dependency for the public preview.
+- The app has focused tests around care-continuity grouping, actions, location packs, proof ledger behavior, and the web view model.
 
 ## Live Proof
 
-Latest live smoke: June 20, 2026. The Vercel preview loaded cleanly at desktop and mobile sizes with no browser console errors.
+Latest live smoke: June 20, 2026. The Vercel production alias loaded cleanly at desktop and mobile sizes with no browser console errors.
 
 | Desktop | Mobile |
 | --- | --- |
 | ![RELAY desktop preview](showcase/relay-care-desktop.png) | ![RELAY mobile preview](showcase/relay-care-mobile.png) |
 
+Motion capture:
+
+![RELAY motion capture](showcase/relay-care.gif)
+
+## What To Look At First
+
+If you are reviewing the repo quickly, start here:
+
+- `apps/web/app/page.tsx` - main reviewer workspace and command flow.
+- `apps/web/components/relay/RelayUI.tsx` - compact relay UI primitives.
+- `apps/web/lib/careContinuity.ts` - continuity grouping, unsafe-claim handling, and handoff state logic.
+- `apps/web/lib/relayActions.ts` - reviewer action state transitions.
+- `apps/web/app/proof/page.tsx` - public proof ledger surface.
+- `apps/api/app/main.py` - FastAPI service for scenario loading, triage, incident actions, follow packets, board data, and eval.
+- `apps/api/app/services/triage_service.py` - replay/Ollama triage provider boundary.
+- `supabase/migrations/202605050001_relay_proof_ledger.sql` - durable proof ledger schema.
+- `data/scenarios/wildfire_community_center.gemma.json` - deterministic replay outputs.
+- `apps/web/tests/` and `apps/api/tests/` - focused regression tests.
+
 ## Public Links
 
 - Live preview: https://web-zwin-uxs-projects.vercel.app
-- Latest Vercel preview: https://web-cbmy5zxr2-zwin-uxs-projects.vercel.app
 - Proof ledger: https://web-zwin-uxs-projects.vercel.app/proof
 - Figma layout QA: https://www.figma.com/design/z0AcAdbaYLGKC9Kd4gczbJ
 - Public code repository: https://github.com/Zwin-ux/relay-care-continuity
@@ -84,7 +114,6 @@ npm run dev
 Open `http://127.0.0.1:3000`.
 
 Public preview: https://web-zwin-uxs-projects.vercel.app
-Latest Vercel preview: https://web-cbmy5zxr2-zwin-uxs-projects.vercel.app
 
 ## Environment
 
@@ -142,7 +171,6 @@ Target tracks:
 Submission assets:
 
 - Live preview: https://web-zwin-uxs-projects.vercel.app
-- Latest Vercel preview: https://web-cbmy5zxr2-zwin-uxs-projects.vercel.app
 - Proof ledger: https://web-zwin-uxs-projects.vercel.app/proof
 - Figma layout QA: https://www.figma.com/design/z0AcAdbaYLGKC9Kd4gczbJ
 - Public code repository: https://github.com/Zwin-ux/relay-care-continuity
