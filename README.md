@@ -1,16 +1,25 @@
 ﻿# RELAY Care Continuity
 
-RELAY is a reviewer workspace for evacuation-shelter report triage.
+RELAY is an evacuation-shelter review desk for turning messy local reports into a blocked/ready care-continuity ledger.
 
-It groups messy wildfire reports into a **Care Continuity Ledger** so a human reviewer can see medication continuity, oxygen or power-dependent support, infant supplies, mobility transport, hazard access, public-information review, volunteer capacity, missing fields, unsafe claims, and handoff state in one place.
+The demo is deliberately narrow: one Santa Rosa wildfire shelter, 30 replayed source reports, 9 continuity items, a proof ledger, and a review dock that keeps handoff unavailable while required fields or unsafe claims remain open.
 
-The public preview is intentionally narrow: one wildfire/community-center scenario, replayed Gemma-style outputs, one continuity ledger, one review pane, and a handoff state that stays unavailable while required information or unsafe claims remain open.
+The interface is built like incident-operations software, not a generic dashboard: source reports on the left, a dense continuity ledger in the center, and a decision dock on the right.
 
 [Live preview](https://web-zwin-uxs-projects.vercel.app) | [Proof ledger](https://web-zwin-uxs-projects.vercel.app/proof) | [Kaggle writeup draft](docs/kaggle-writeup.md) | [Technical proof](docs/technical-proof.md)
 
 ![RELAY desktop preview](showcase/relay-care-desktop.png)
 
 Replay uses mock data. RELAY does not contact emergency services, dispatch responders, give medical advice, or make operational decisions.
+
+## First 60 Seconds
+
+If you are scanning the repo quickly:
+
+- Click `Load reports` to load the 30-source-report wildfire replay.
+- Click `Group reports` to create the 9-item continuity ledger.
+- Open `Medication continuity` to see source links, six open fields, an unsafe insulin claim hold, and a disabled handoff action.
+- Open `/proof` to inspect the public-safe run receipt.
 
 ## Why Review This Repo
 
@@ -22,7 +31,7 @@ Replay uses mock data. RELAY does not contact emergency services, dispatch respo
 
 ## Live Proof
 
-Latest live smoke: June 20, 2026. The Vercel production alias loaded cleanly at desktop and mobile sizes with no browser console errors.
+Latest design-review smoke: June 20, 2026. gstack browse loaded the populated desktop and mobile workspace against the local API with no browser console errors.
 
 | Desktop | Mobile |
 | --- | --- |
@@ -101,7 +110,7 @@ Details: `docs/supabase-proof-ledger.md`
 ## Run Locally
 
 ```bash
-cd relay
+cd relay-care-continuity
 npm install
 cd apps/api
 python -m venv .venv
