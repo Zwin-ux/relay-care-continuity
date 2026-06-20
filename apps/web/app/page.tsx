@@ -836,20 +836,20 @@ function HandoffPanel({
         </div>
       </div>
       <div className="mt-2 grid gap-2">
-        <Button variant="primary" block loading={pending && pendingType === "follow"} disabled={!follow.enabled} onClick={() => onRun("follow", incident.id)}>
+        <ReviewActionButton primary loading={pending && pendingType === "follow"} disabled={!follow.enabled} onClick={() => onRun("follow", incident.id)}>
           Request missing info
-        </Button>
+        </ReviewActionButton>
         <div className="grid gap-2">
-          <Button variant="secondary" compact loading={pending && pendingType === "verify"} disabled={!verify.enabled} onClick={() => onRun("verify", incident.id)}>
+          <ReviewActionButton loading={pending && pendingType === "verify"} disabled={!verify.enabled} onClick={() => onRun("verify", incident.id)}>
             Record fields complete
-          </Button>
-          <Button variant="secondary" compact loading={pending && pendingType === "escalate"} disabled={!supervisor.enabled} onClick={() => onRun("escalate", incident.id)}>
+          </ReviewActionButton>
+          <ReviewActionButton loading={pending && pendingType === "escalate"} disabled={!supervisor.enabled} onClick={() => onRun("escalate", incident.id)}>
             Flag for review
-          </Button>
+          </ReviewActionButton>
         </div>
-        <Button variant="secondary" block loading={pending && pendingType === "dispatch"} disabled={!handoff.enabled} onClick={() => onRun("dispatch", incident.id)}>
+        <ReviewActionButton loading={pending && pendingType === "dispatch"} disabled={!handoff.enabled} onClick={() => onRun("dispatch", incident.id)}>
           Mark ready for handoff
-        </Button>
+        </ReviewActionButton>
         {!handoff.enabled && reason ? <p className="rounded-md bg-[#fff7db] px-3 py-2 text-xs font-semibold text-[#9a6700]">Complete required fields to enable handoff.</p> : null}
         {selectedTask.unsafeClaims.length > 0 ? <p className="rounded-md bg-[#fff1ef] px-3 py-2 text-xs font-semibold text-[#c0352b]">Unsafe claim review required before handoff.</p> : null}
       </div>
@@ -1073,6 +1073,35 @@ function CommandActionButton({
         primary
           ? "border-[#1652f0] bg-[#1652f0] text-white hover:bg-[#0f45d8]"
           : "border-[#d7dee9] bg-white text-[#0a1b3d] hover:border-[#1652f0]"
+      }`}
+    >
+      {loading ? "Working..." : children}
+    </button>
+  );
+}
+
+function ReviewActionButton({
+  children,
+  disabled,
+  loading,
+  primary,
+  onClick,
+}: {
+  children: React.ReactNode;
+  disabled?: boolean;
+  loading?: boolean;
+  primary?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      className={`min-h-10 w-full rounded-[3px] border px-3 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 disabled:cursor-not-allowed disabled:border-[#c8d0dc] disabled:bg-[#eef2f6] disabled:text-[#7b8797] ${
+        primary
+          ? "border-[#1652f0] bg-[#1652f0] text-white hover:bg-[#0f45d8]"
+          : "border-[#cfd8e5] bg-white text-[#0a1b3d] hover:border-[#1652f0]"
       }`}
     >
       {loading ? "Working..." : children}

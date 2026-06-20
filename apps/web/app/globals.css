@@ -3,8 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --font-sans: var(--fontFamily-body, "Aptos"), "Segoe UI", sans-serif;
+  --font-sans: "Aptos", "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", "Courier New", monospace;
+  --relay-ink: #152033;
+  --relay-muted: #5d6878;
+  --relay-line: #d2d9e3;
+  --relay-panel: #ffffff;
+  --relay-panel-2: #f7f9fc;
+  --relay-blue: #2454d6;
+  --relay-amber: #8a5b00;
+  --relay-red: #b42318;
+  --relay-green: #16794c;
 }
 
 * {
@@ -13,8 +22,8 @@
 
 body {
   margin: 0;
-  background: #e8eef5;
-  color: #0A1B3D;
+  background: #eef2f6;
+  color: var(--relay-ink);
   font-family: var(--font-sans);
 }
 
@@ -34,15 +43,14 @@ button, input, textarea {
 }
 
 .relay-cds-shell {
-  background:
-    linear-gradient(180deg, rgba(247, 250, 253, 0.98) 0%, rgba(232, 238, 245, 1) 46%, rgba(223, 231, 240, 1) 100%);
+  background: #eef2f6;
 }
 
 .relay-panel {
-  border: 1px solid #cfd8e5;
-  border-radius: 10px;
-  background: #ffffff;
-  box-shadow: 0 1px 0 rgba(10, 27, 61, 0.04);
+  border: 1px solid var(--relay-line);
+  border-radius: 3px;
+  background: var(--relay-panel);
+  box-shadow: 0 1px 2px rgba(21, 32, 51, 0.04);
 }
 
 .relay-elevated {
@@ -54,4 +62,124 @@ button, input, textarea {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.relay-cds-shell .bg-white,
+.relay-cds-shell .bg-\[\#ffffff\] {
+  background-color: var(--relay-panel) !important;
+}
+
+.relay-cds-shell .bg-\[\#f8fafc\],
+.relay-cds-shell .bg-\[\#fbfcfe\],
+.relay-cds-shell .bg-\[\#f6f9fc\] {
+  background-color: var(--relay-panel-2) !important;
+}
+
+.relay-cds-shell .bg-\[\#f7faff\],
+.relay-cds-shell .bg-\[\#f8fbff\],
+.relay-cds-shell .bg-\[\#f2f6ff\] {
+  background-color: #eef3ff !important;
+}
+
+.relay-cds-shell .bg-\[\#fff9e8\],
+.relay-cds-shell .bg-\[\#fff7db\] {
+  background-color: #fff7df !important;
+}
+
+.relay-cds-shell .bg-\[\#fff1ef\] {
+  background-color: #fff1ef !important;
+}
+
+.relay-cds-shell .bg-\[\#f3fbf6\],
+.relay-cds-shell .bg-\[\#eefaf2\] {
+  background-color: #eefaf2 !important;
+}
+
+.relay-cds-shell .border-\[\#d7dee9\],
+.relay-cds-shell .border-\[\#cfd8e5\],
+.relay-cds-shell .border-\[\#e6ebf2\],
+.relay-cds-shell .border-\[\#dfe6ef\] {
+  border-color: var(--relay-line) !important;
+}
+
+.relay-cds-shell .border-\[\#1652f0\],
+.relay-cds-shell .hover\:border-\[\#1652f0\]:hover {
+  border-color: var(--relay-blue) !important;
+}
+
+.relay-cds-shell .text-\[\#0a1b3d\] {
+  color: var(--relay-ink) !important;
+}
+
+.relay-cds-shell .text-\[\#536579\],
+.relay-cds-shell .text-\[\#657386\],
+.relay-cds-shell .text-\[\#7b8797\] {
+  color: var(--relay-muted) !important;
+}
+
+.relay-cds-shell .text-\[\#1652f0\] {
+  color: var(--relay-blue) !important;
+}
+
+.relay-cds-shell .text-\[\#9a6700\] {
+  color: var(--relay-amber) !important;
+}
+
+.relay-cds-shell .text-\[\#c0352b\] {
+  color: var(--relay-red) !important;
+}
+
+.relay-cds-shell .text-\[\#247a4d\] {
+  color: var(--relay-green) !important;
+}
+
+.relay-cds-shell .bg-\[\#1652f0\] {
+  background-color: var(--relay-blue) !important;
+}
+
+.relay-cds-shell .hover\:bg-\[\#0f45d8\]:hover {
+  background-color: #1d45ad !important;
+}
+
+.relay-cds-shell input,
+.relay-cds-shell select,
+.relay-cds-shell textarea {
+  background: #ffffff !important;
+  color: var(--relay-ink) !important;
+  border-color: var(--relay-line) !important;
+}
+
+.relay-cds-shell input::placeholder,
+.relay-cds-shell textarea::placeholder {
+  color: #8792a2 !important;
+}
+
+.relay-cds-shell .rounded-md,
+.relay-cds-shell .rounded-lg,
+.relay-cds-shell .rounded-xl,
+.relay-cds-shell .rounded-2xl,
+.relay-cds-shell .rounded-\[14px\],
+.relay-cds-shell .rounded-\[24px\],
+.relay-cds-shell .rounded-\[28px\] {
+  border-radius: 3px !important;
+}
+
+.relay-cds-shell .rounded-full {
+  border-radius: 999px !important;
+}
+
+.relay-cds-shell [class*="shadow-"] {
+  box-shadow: none !important;
+}
+
+.relay-cds-shell img[src*="/brand/"],
+.relay-cds-shell img[src*="/scenario/"] {
+  border-radius: 3px !important;
+}
+
+.relay-cds-shell button,
+.relay-cds-shell a,
+.relay-cds-shell select,
+.relay-cds-shell input {
+  letter-spacing: 0;
 }
