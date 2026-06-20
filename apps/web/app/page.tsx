@@ -130,7 +130,7 @@ export default function Page() {
   const showReviewerLaunch = false;
 
   return (
-    <div className="relay-cds-shell flex h-screen min-h-screen flex-col overflow-hidden bg-[#eef3f8] p-3 text-[#0a1b3d]">
+    <div className="relay-cds-shell flex h-screen min-h-screen flex-col overflow-hidden bg-[#eef3f8] p-2 text-[#0a1b3d] sm:p-3">
       <CommandBar
         snapshot={snapshot}
         counts={counts}
@@ -190,9 +190,9 @@ function ActivationSignalStrip({ context, loading }: { context: LiveContextSigna
           {context.sourceLabel}. Public context only; source reports still drive the ledger.
         </p>
       </div>
-      <div className="flex min-w-0 items-center justify-start gap-2 min-[960px]:justify-end">
+      <div className="grid min-w-0 grid-cols-2 gap-2 min-[520px]:flex min-[520px]:items-center min-[520px]:justify-start min-[960px]:justify-end">
         <CdsTag tone={context.alerts.length ? "yellow" : "gray"}>{context.alerts.length} NWS alerts</CdsTag>
-        <a href="/proof" className="rounded-lg border border-[#d7dee9] bg-white px-3 py-2 text-xs font-semibold text-[#0a1b3d] hover:border-[#1652f0]">
+        <a href="/proof" className="grid min-h-9 place-items-center rounded-lg border border-[#d7dee9] bg-white px-3 py-2 text-center text-xs font-semibold text-[#0a1b3d] hover:border-[#1652f0]">
           Share proof brief
         </a>
       </div>
@@ -275,12 +275,12 @@ function CommandBar({
 }) {
   const activePack = locationPackFromSnapshot(snapshot);
   return (
-    <header className="relay-panel shrink-0 px-3 py-2">
+    <header className="relay-panel shrink-0 px-3 py-3 min-[1120px]:py-2">
       <div className="grid min-h-[64px] gap-3 min-[1120px]:grid-cols-[370px_minmax(380px,1fr)_auto] min-[1120px]:items-center">
         <div className="flex min-w-0 items-center gap-3">
           <img src={relayTokens.assets.logo} alt="" className="size-9 rounded-xl" />
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
+            <div className="flex min-w-0 flex-wrap items-center gap-2">
               <h1 className="text-xl font-semibold tracking-tight">RELAY</h1>
               <CdsTag tone="blue">Care Continuity</CdsTag>
             </div>
@@ -288,7 +288,7 @@ function CommandBar({
           </div>
         </div>
 
-        <div className="thin-scroll flex min-w-0 items-center gap-2 overflow-x-auto">
+        <div className="thin-scroll grid min-w-0 grid-cols-2 gap-2 min-[760px]:flex min-[760px]:items-center min-[760px]:overflow-x-auto">
           <Meta label="Location" value={snapshot?.app.location_label ?? activePack.location.display} />
           <Meta label="Context" value={`${snapshot?.app.hazard_type ?? activePack.hazard_type} ${snapshot?.app.site_type ?? activePack.site_type}`} />
           <Meta label="Mode" value={snapshot?.app.model_mode === "ollama" ? "Local Gemma" : "Replay"} />
@@ -297,14 +297,14 @@ function CommandBar({
         </div>
 
         {showActions ? (
-          <div className="flex shrink-0 flex-wrap items-center gap-2 min-[1120px]:justify-end">
-            <label className="flex items-center gap-2 rounded-lg border border-[#d7dee9] bg-[#f8fafc] px-2 py-1 text-xs font-semibold text-[#536579]">
-              Activate location
+          <div className="grid w-full shrink-0 gap-2 min-[1120px]:w-auto min-[1120px]:justify-end">
+            <label className="grid min-w-0 gap-1 rounded-lg border border-[#d7dee9] bg-[#f8fafc] px-2 py-1.5 text-xs font-semibold text-[#536579] min-[760px]:grid-cols-[auto_minmax(190px,1fr)] min-[760px]:items-center">
+              <span>Activate location</span>
               <select
                 value={activePack.id}
                 disabled={loading}
                 onChange={(event) => onRun("activate_location", event.target.value)}
-                className="max-w-[190px] rounded-md border border-[#d7dee9] bg-white px-2 py-1 text-xs font-semibold text-[#0a1b3d] outline-none focus:border-[#1652f0] focus:ring-2 focus:ring-[#1652f0]/20"
+                className="w-full min-w-0 rounded-md border border-[#d7dee9] bg-white px-2 py-1.5 text-xs font-semibold text-[#0a1b3d] outline-none focus:border-[#1652f0] focus:ring-2 focus:ring-[#1652f0]/20"
                 aria-label="Activate location"
               >
                 {locationPacks.map((pack) => (
@@ -314,21 +314,23 @@ function CommandBar({
                 ))}
               </select>
             </label>
-            <a
-              href="/proof"
-              className="rounded-lg border border-[#d7dee9] bg-white px-3 py-2 text-sm font-semibold text-[#0a1b3d] transition hover:border-[#1652f0] focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30"
-            >
-              Proof ledger
-            </a>
-            <Button variant="secondary" compact disabled={loading} onClick={() => onRun("load")}>
-              Load reports
-            </Button>
-            <Button variant="primary" compact loading={loading} disabled={loading} onClick={() => onRun("triage")}>
-              Group reports
-            </Button>
-            <Button variant="secondary" compact disabled={loading || !selectedId} onClick={() => selectedId && onRun("follow", selectedId)}>
-              Check missing info
-            </Button>
+            <div className="grid grid-cols-2 gap-2 min-[760px]:grid-cols-4 min-[1120px]:flex min-[1120px]:items-center min-[1120px]:justify-end">
+              <a
+                href="/proof"
+                className="grid min-h-10 place-items-center rounded-lg border border-[#d7dee9] bg-white px-3 py-2 text-center text-sm font-semibold text-[#0a1b3d] transition hover:border-[#1652f0] focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30"
+              >
+                Proof ledger
+              </a>
+              <CommandActionButton disabled={loading} onClick={() => onRun("load")}>
+                Load reports
+              </CommandActionButton>
+              <CommandActionButton primary loading={loading} disabled={loading} onClick={() => onRun("triage")}>
+                Group reports
+              </CommandActionButton>
+              <CommandActionButton disabled={loading || !selectedId} onClick={() => selectedId && onRun("follow", selectedId)}>
+                Check missing info
+              </CommandActionButton>
+            </div>
           </div>
         ) : (
           <div className="flex shrink-0 items-center justify-start min-[1120px]:justify-end">
@@ -355,12 +357,12 @@ function PublicContextStrip({
   const headline = "headline" in primary ? primary.headline : primary.label;
   return (
     <section className="relay-panel mt-2 flex shrink-0 flex-col gap-2 px-3 py-2 min-[960px]:flex-row min-[960px]:items-center">
-      <div className="flex min-w-0 flex-1 items-center gap-2">
+      <div className="grid min-w-0 flex-1 gap-1 min-[620px]:flex min-[620px]:items-center min-[620px]:gap-2">
         <CdsTag tone="gray">Local context</CdsTag>
         <p className="min-w-0 truncate text-sm font-medium text-[#0a1b3d]">{packLabel}: {headline}</p>
         <p className="hidden truncate text-sm text-[#536579] min-[1280px]:block">{primary.body}</p>
       </div>
-      <p className="shrink-0 text-xs font-semibold text-[#536579]">{contextLine}. Context only. Source reports still require review.</p>
+      <p className="min-w-0 text-xs font-semibold leading-5 text-[#536579] min-[960px]:shrink-0">{contextLine}. Context only. Source reports still require review.</p>
     </section>
   );
 }
@@ -511,7 +513,7 @@ function IncomingReports({
   const missing = allReports.filter((report) => report.stateLabel === "Missing info").length;
 
   return (
-    <aside className="relay-panel flex min-h-[520px] min-w-0 flex-col overflow-hidden">
+    <aside className="relay-panel flex min-h-[420px] min-w-0 flex-col overflow-hidden min-[1120px]:min-h-[520px]">
       <SectionHeader
         title="Incoming Reports"
         description="Source reports grouped by care need and source. Conflicts stay visible."
@@ -657,7 +659,7 @@ function CareContinuityLedger({
   const unsafe = tasks.reduce((sum, task) => sum + task.unsafeClaims.length, 0);
 
   return (
-    <section className="relay-panel flex min-h-[520px] min-w-0 flex-col overflow-hidden">
+    <section className="relay-panel flex min-h-[420px] min-w-0 flex-col overflow-hidden min-[1120px]:min-h-[520px]">
       <SectionHeader
         title="Care Continuity Ledger"
         description="Grouped care-continuity items stay unavailable until review inputs are complete."
@@ -703,7 +705,7 @@ function ContinuityLedgerRow({ task, selected, onSelect }: { task: ContinuityTas
           <CdsTag tone={task.stateLabel.includes("Unsafe") ? "red" : task.handoffStatus === "Unavailable" ? "yellow" : "green"}>{task.stateLabel}</CdsTag>
         </div>
         <p className="mt-1 line-clamp-2 text-sm leading-5 text-[#536579]">{task.summary}</p>
-        <div className="mt-3 grid min-w-0 grid-cols-2 gap-2 text-xs text-[#536579] min-[1360px]:grid-cols-4">
+        <div className="mt-3 grid min-w-0 grid-cols-1 gap-2 text-xs text-[#536579] min-[520px]:grid-cols-2 min-[1360px]:grid-cols-4">
           <TaskFact label="Source reports" value={task.sourceLinkLabel} />
           <TaskFact label="Missing fields" value={task.missingLabel} warn={task.missing_information_count > 0} />
           <TaskFact label="Review queue" value={task.candidateQueue} />
@@ -733,7 +735,7 @@ function ContinuityReview({
   onRun: (type: CommandAction, id?: string) => void;
 }) {
   return (
-    <aside className="relay-panel flex min-h-[520px] min-w-0 flex-col overflow-hidden">
+    <aside className="relay-panel flex min-h-[420px] min-w-0 flex-col overflow-hidden min-[1120px]:min-h-[520px]">
       <SectionHeader
         title="Continuity Review"
         description="Review source reports, missing fields, and unsafe claims."
@@ -769,18 +771,18 @@ function ContinuityReview({
 function ReviewHeader({ incident, task }: { incident: Incident; task: ContinuityTask }) {
   const missingCount = incident.missing_information.length;
   return (
-    <section>
-      <div className="flex items-start justify-between gap-3">
+    <section className="min-w-0">
+      <div className="flex min-w-0 items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <SeverityTag urgency={incident.urgency} />
             <CdsTag tone={task.handoffStatus === "Unavailable" ? "yellow" : "green"}>{task.handoffStatus}</CdsTag>
           </div>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#0a1b3d]">{task.title}</h2>
+          <h2 className="mt-2 break-words text-xl font-semibold tracking-tight text-[#0a1b3d] min-[420px]:text-2xl">{task.title}</h2>
           <p className="mt-1 break-words text-sm leading-6 text-[#536579]">{reportGroundedIncident(incident.summary)}</p>
         </div>
       </div>
-      <div className="mt-3 grid grid-cols-2 gap-2">
+      <div className="mt-3 grid grid-cols-1 gap-2 min-[420px]:grid-cols-3">
         <Metric label="Care area" value={careLabel(task.careDomain)} />
         <Metric label="Source links" value={String(incident.evidence.length)} />
         <Metric label="Open fields" value={String(missingCount)} tone={missingCount > 0 ? "yellow" : "green"} />
@@ -815,7 +817,7 @@ function HandoffPanel({
     <section className="rounded-xl border border-[#d7dee9] bg-white p-3">
       <div className={`rounded-xl border px-3 py-3 ${handoff.enabled ? "border-[#c9d8ff] bg-[#f2f6ff]" : "border-[#f0d48a] bg-[#fff9e8]"}`}>
         <div className="flex items-start gap-2">
-          <span className={`mt-0.5 shrink-0 text-sm font-bold ${handoff.enabled ? "text-[#1652f0]" : "text-[#9a6700]"}`}>{handoff.enabled ? "i" : "△"}</span>
+          <span className={`mt-0.5 shrink-0 text-sm font-bold ${handoff.enabled ? "text-[#1652f0]" : "text-[#9a6700]"}`}>{handoff.enabled ? "i" : "!"}</span>
           <div className="min-w-0">
             <h3 className="text-sm font-semibold text-[#0a1b3d]">{handoff.enabled ? "Handoff review available" : "Handoff unavailable"}</h3>
             <p className="mt-1 text-sm leading-5 text-[#0a1b3d]">
@@ -1030,11 +1032,40 @@ function CdsTag({ children, tone = "gray" }: { children: React.ReactNode; tone?:
   );
 }
 
+function CommandActionButton({
+  children,
+  disabled,
+  loading,
+  primary,
+  onClick,
+}: {
+  children: React.ReactNode;
+  disabled?: boolean;
+  loading?: boolean;
+  primary?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      className={`min-h-10 rounded-lg border px-3 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 disabled:cursor-not-allowed disabled:opacity-55 ${
+        primary
+          ? "border-[#1652f0] bg-[#1652f0] text-white hover:bg-[#0f45d8]"
+          : "border-[#d7dee9] bg-white text-[#0a1b3d] hover:border-[#1652f0]"
+      }`}
+    >
+      {loading ? "Working..." : children}
+    </button>
+  );
+}
+
 function Meta({ label, value, warn }: { label: string; value: string; warn?: boolean }) {
   return (
-    <span className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-[#d7dee9] bg-[#f8fafc] px-2 py-1 text-xs">
-      <span className="font-semibold text-[#536579]">{label}:</span>
-      <span className={`font-semibold ${warn ? "text-[#9a6700]" : "text-[#0a1b3d]"}`}>{value}</span>
+    <span className="flex min-w-0 items-center gap-1 rounded-lg border border-[#d7dee9] bg-[#f8fafc] px-2 py-1 text-xs min-[760px]:shrink-0">
+      <span className="shrink-0 font-semibold text-[#536579]">{label}:</span>
+      <span className={`min-w-0 truncate font-semibold ${warn ? "text-[#9a6700]" : "text-[#0a1b3d]"}`}>{value}</span>
     </span>
   );
 }
