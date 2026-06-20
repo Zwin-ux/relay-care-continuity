@@ -19,7 +19,7 @@ If you are scanning the repo quickly:
 - Click `Load reports` to load the 30-source-report wildfire replay.
 - Click `Group reports` to create the 9-item continuity ledger.
 - Open `Medication continuity` to see source links, six open fields, an unsafe insulin claim hold, and a disabled handoff action.
-- Click `Request missing info` to print the missing-info pull: field, source, ask, and audit receipt.
+- Click `Request missing info` to play the Dispatch Arcade: match the source, choose the safe ask, score the run, then lock the ticket.
 - Open `/proof` to inspect the public-safe run receipt.
 
 ## Why Review This Repo
@@ -38,11 +38,11 @@ Latest production smoke: June 20, 2026. gstack browse loaded the populated deskt
 | --- | --- |
 | ![RELAY desktop preview](showcase/relay-care-desktop.png) | ![RELAY mobile preview](showcase/relay-care-mobile.png) |
 
-Missing-info pull:
+Dispatch Arcade:
 
-| Desktop pull | Mobile pull |
+| Desktop arcade | Mobile arcade |
 | --- | --- |
-| ![RELAY missing-info pull desktop](showcase/relay-missing-info-pull-desktop.png) | ![RELAY missing-info pull mobile](showcase/relay-missing-info-pull-mobile-panel.png) |
+| ![RELAY Dispatch Arcade desktop](showcase/relay-missing-info-pull-desktop.png) | ![RELAY Dispatch Arcade mobile](showcase/relay-missing-info-pull-mobile-panel.png) |
 
 Motion capture:
 
@@ -171,7 +171,7 @@ MODEL_MODE=ollama GEMMA_MODEL=gemma4:e2b npm run dev
 5. Show the Care Continuity Ledger: source reports, missing fields, unsafe claim count, and handoff state.
 6. Show the Continuity Review pane and call out recipient identity, pickup contact, and pharmacy or pickup location.
 7. Show the unsafe insulin dosing claim held for review.
-8. Click `Request missing info` and show the operation receipt.
+8. Click `Request missing info`, complete the Dispatch Arcade, and show the score plus operation receipt.
 9. Show that `Mark ready for handoff` stays disabled while required fields are open.
 10. Explain replay mode for public reliability and Ollama mode for local Gemma verification.
 

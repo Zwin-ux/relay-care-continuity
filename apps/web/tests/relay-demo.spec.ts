@@ -165,14 +165,36 @@ test("requesting missing info records a receipt without changing the selected le
   await page.getByRole("button", { name: "Request missing info" }).click();
 
   await expect(page.getByTestId("missing-info-pull")).toBeVisible();
-  await expect(page.getByText("Missing Info Pull")).toBeVisible();
+  await expect(page.getByText("Dispatch Arcade")).toBeVisible();
+  await expect(page.getByText("Match source")).toBeVisible({ timeout: 20_000 });
   await expect(page.getByText("Confirm recipient identity").first()).toBeVisible();
-  await expect(page.getByText("Text report 01").first()).toBeVisible();
-  await expect(page.getByText("Ticket printed")).toBeVisible({ timeout: 20_000 });
+  await page.getByRole("button", { name: /Text report 01.*need medication picked up/i }).click();
+  await expect(page.getByText("Choose safe ask")).toBeVisible();
+  await page.getByRole("button", { name: /Confirm identity.*Ask the source owner/i }).click();
+  await expect(page.getByTestId("arcade-score")).toContainText("Clean ticket");
+  await page.getByTestId("arcade-lock-ticket").click();
+  await expect(page.getByTestId("dispatch-arcade").getByText("Ticket printed")).toBeVisible({ timeout: 20_000 });
   await expect(page.getByText("Operation recorded")).toBeVisible({ timeout: 20_000 });
   await expect(page.getByText("Handoff unavailable").first()).toBeVisible();
   await expect(page.locator(`[data-testid="${selectedId}"]`)).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("button", { name: "Mark ready for handoff" })).toBeDisabled();
+});
+
+test("dispatch arcade blocks unsafe ask choices before recording a ticket", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await loadAndGroup(page);
+
+  const firstTask = page.getByTestId(/continuity-task-/).filter({ hasText: "Medication continuity" }).first();
+  await firstTask.click();
+  await page.getByRole("button", { name: "Request missing info" }).click();
+
+  await expect(page.getByText("Match source")).toBeVisible({ timeout: 20_000 });
+  await page.getByRole("button", { name: /Text report 01.*need medication picked up/i }).click();
+  await page.getByRole("button", { name: /Give care advice.*medication or treatment/i }).click();
+
+  await expect(page.getByTestId("arcade-score")).toContainText("Unsafe ask blocked");
+  await expect(page.getByText("Unsafe ask blocked. RELAY cannot give treatment instructions.")).toBeVisible();
+  await expect(page.getByTestId("arcade-lock-ticket")).toBeDisabled();
 });
 
 test("desktop layout keeps the three main zones in one row", async ({ page }) => {

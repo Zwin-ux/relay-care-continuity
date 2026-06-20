@@ -26,16 +26,22 @@ import { getActionAvailability } from "@/lib/relayActions";
 import { OperationReceipt, useRelayMutation, useRelaySnapshot } from "@/lib/relayHooks";
 import { relayTokens } from "@/lib/relayTokens";
 import { formatTime, missingItemsForDisplay, sanitizeOperationMessage } from "@/lib/relayViewModel";
-import { buildMissingInfoPullPacket, MissingInfoPullPacket } from "@/lib/missingInfoPull";
+import { ArcadeChoice, buildDispatchArcadeRun, DispatchArcadeRun, DispatchArcadeScore, scoreDispatchArcadeRun } from "@/lib/missingInfoArcade";
 
 type ReportFilter = "All" | "Critical" | "Missing info" | "Unsafe claim";
 type CommandAction = "load" | "triage" | "follow" | "verify" | "dispatch" | "escalate" | "activate_location";
-type MissingInfoPullPhase = "spinning" | "locked" | "submitting" | "printed" | "failed";
+type MissingInfoPullPhase = "pull" | "match" | "ask" | "lock" | "submitting" | "printed" | "failed";
 type MissingInfoPullState = {
   requestId: string;
   incidentId: string;
   phase: MissingInfoPullPhase;
-  packet: MissingInfoPullPacket;
+  run: DispatchArcadeRun;
+  startedAt: number;
+  selectedSourceId?: string;
+  selectedAskId?: string;
+  sourceFeedback?: string;
+  askFeedback?: string;
+  score?: DispatchArcadeScore;
 };
 
 const reportFilters: ReportFilter[] = ["All", "Critical", "Missing info", "Unsafe claim"];
@@ -112,35 +118,72 @@ export default function Page() {
   };
 
   const requestMissingInfo = (incident: Incident) => {
-    const packet = buildMissingInfoPullPacket(incident);
-    if (!packet) {
+    const arcadeRun = buildDispatchArcadeRun(incident);
+    if (!arcadeRun) {
       run("follow", incident.id);
       return;
     }
 
     const requestId = `${incident.id}-${Date.now()}`;
     const reduceMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const lockDelay = reduceMotion ? 0 : 1100;
-    const submitDelay = reduceMotion ? 80 : 520;
+    const pullDelay = reduceMotion ? 0 : 1100;
 
     setReceipt(null);
     setBlockedAction(null);
-    setMissingInfoPull({ requestId, incidentId: incident.id, phase: reduceMotion ? "locked" : "spinning", packet });
+    setMissingInfoPull({
+      requestId,
+      incidentId: incident.id,
+      phase: reduceMotion ? "match" : "pull",
+      run: arcadeRun,
+      startedAt: Date.now(),
+    });
 
     window.setTimeout(() => {
-      setMissingInfoPull((current) => (current?.requestId === requestId ? { ...current, phase: "locked" } : current));
-      window.setTimeout(() => {
-        setMissingInfoPull((current) => (current?.requestId === requestId ? { ...current, phase: "submitting" } : current));
-        mutation
-          .mutateAsync({ type: "follow", id: incident.id })
-          .then(() => {
-            setMissingInfoPull((current) => (current?.requestId === requestId ? { ...current, phase: "printed" } : current));
-          })
-          .catch(() => {
-            setMissingInfoPull((current) => (current?.requestId === requestId ? { ...current, phase: "failed" } : current));
-          });
-      }, submitDelay);
-    }, lockDelay);
+      setMissingInfoPull((current) => (current?.requestId === requestId && current.phase === "pull" ? { ...current, phase: "match" } : current));
+    }, pullDelay);
+  };
+
+  const selectArcadeSource = (choice: ArcadeChoice) => {
+    setMissingInfoPull((current) => {
+      if (!current || current.phase === "submitting" || current.phase === "printed") return current;
+      return {
+        ...current,
+        phase: choice.correct ? "ask" : "match",
+        selectedSourceId: choice.id,
+        sourceFeedback: choice.feedback,
+      };
+    });
+  };
+
+  const selectArcadeAsk = (choice: ArcadeChoice) => {
+    setMissingInfoPull((current) => {
+      if (!current || current.phase === "submitting" || current.phase === "printed") return current;
+      const score = scoreDispatchArcadeRun(current.run, current.selectedSourceId, choice.id, Date.now() - current.startedAt);
+      return {
+        ...current,
+        phase: choice.correct ? "lock" : "ask",
+        selectedAskId: choice.id,
+        askFeedback: choice.feedback,
+        score,
+      };
+    });
+  };
+
+  const lockArcadeTicket = () => {
+    const current = missingInfoPull;
+    if (!current || current.phase !== "lock" || !current.selectedSourceId || !current.selectedAskId) return;
+
+    const requestId = current.requestId;
+    const score = current.score ?? scoreDispatchArcadeRun(current.run, current.selectedSourceId, current.selectedAskId, Date.now() - current.startedAt);
+    setMissingInfoPull((existing) => (existing?.requestId === requestId ? { ...existing, phase: "submitting", score } : existing));
+    mutation
+      .mutateAsync({ type: "follow", id: current.incidentId })
+      .then(() => {
+        setMissingInfoPull((existing) => (existing?.requestId === requestId ? { ...existing, phase: "printed", score } : existing));
+      })
+      .catch(() => {
+        setMissingInfoPull((existing) => (existing?.requestId === requestId ? { ...existing, phase: "failed", score } : existing));
+      });
   };
 
   const addManualReport = (text: string) => {
@@ -219,6 +262,9 @@ export default function Page() {
               missingInfoPull={missingInfoPull}
               onRun={run}
               onRequestMissingInfo={requestMissingInfo}
+              onSelectArcadeSource={selectArcadeSource}
+              onSelectArcadeAsk={selectArcadeAsk}
+              onLockArcadeTicket={lockArcadeTicket}
             />
           </div>
         </main>
@@ -810,6 +856,9 @@ function ContinuityReview({
   missingInfoPull,
   onRun,
   onRequestMissingInfo,
+  onSelectArcadeSource,
+  onSelectArcadeAsk,
+  onLockArcadeTicket,
 }: {
   incident: Incident | null;
   selectedTask: ContinuityTask | null;
@@ -820,6 +869,9 @@ function ContinuityReview({
   missingInfoPull: MissingInfoPullState | null;
   onRun: (type: CommandAction, id?: string) => void;
   onRequestMissingInfo: (incident: Incident) => void;
+  onSelectArcadeSource: (choice: ArcadeChoice) => void;
+  onSelectArcadeAsk: (choice: ArcadeChoice) => void;
+  onLockArcadeTicket: () => void;
 }) {
   return (
     <aside className="flex min-h-[420px] min-w-0 flex-col overflow-hidden bg-[#fbfcfe] min-[1120px]:min-h-[520px]">
@@ -843,6 +895,9 @@ function ContinuityReview({
               missingInfoPull={missingInfoPull?.incidentId === incident.id ? missingInfoPull : null}
               onRun={onRun}
               onRequestMissingInfo={onRequestMissingInfo}
+              onSelectArcadeSource={onSelectArcadeSource}
+              onSelectArcadeAsk={onSelectArcadeAsk}
+              onLockArcadeTicket={onLockArcadeTicket}
             />
             <UnsafeClaimPanel task={selectedTask} />
             <MissingFieldLedger incident={incident} />
@@ -911,6 +966,9 @@ function HandoffPanel({
   missingInfoPull,
   onRun,
   onRequestMissingInfo,
+  onSelectArcadeSource,
+  onSelectArcadeAsk,
+  onLockArcadeTicket,
 }: {
   incident: Incident;
   selectedTask: ContinuityTask;
@@ -919,13 +977,16 @@ function HandoffPanel({
   missingInfoPull: MissingInfoPullState | null;
   onRun: (type: CommandAction, id?: string) => void;
   onRequestMissingInfo: (incident: Incident) => void;
+  onSelectArcadeSource: (choice: ArcadeChoice) => void;
+  onSelectArcadeAsk: (choice: ArcadeChoice) => void;
+  onLockArcadeTicket: () => void;
 }) {
   const missing = missingItemsForDisplay(incident);
   const handoff = getActionAvailability(incident, "dispatch");
   const verify = getActionAvailability(incident, "verify");
   const follow = getActionAvailability(incident, "follow");
   const supervisor = getActionAvailability(incident, "escalate");
-  const pullActive = missingInfoPull?.phase === "spinning" || missingInfoPull?.phase === "locked" || missingInfoPull?.phase === "submitting";
+  const arcadeRunning = Boolean(missingInfoPull && missingInfoPull.phase !== "printed" && missingInfoPull.phase !== "failed");
   const reason = missing.length > 0
     ? `${missing.length} required field${missing.length === 1 ? "" : "s"} still open: ${missing.join(", ")}.`
     : handoff.reason?.replace(/dispatch/gi, "handoff");
@@ -943,13 +1004,15 @@ function HandoffPanel({
           </div>
         </div>
       </div>
-      {missingInfoPull ? <MissingInfoPullPanel pull={missingInfoPull} /> : null}
+      {missingInfoPull ? (
+        <MissingInfoPullPanel pull={missingInfoPull} onSelectSource={onSelectArcadeSource} onSelectAsk={onSelectArcadeAsk} onLockTicket={onLockArcadeTicket} />
+      ) : null}
       <div className="mt-2 grid gap-2">
         <ReviewActionButton
           primary
-          loading={pullActive || (pending && pendingType === "follow")}
-          loadingLabel={missingInfoPull?.phase === "spinning" ? "Drawing packet..." : missingInfoPull?.phase === "locked" ? "Locking request..." : "Writing receipt..."}
-          disabled={!follow.enabled || pullActive}
+          loading={(missingInfoPull?.phase === "pull" || missingInfoPull?.phase === "submitting") || (pending && pendingType === "follow")}
+          loadingLabel={missingInfoPull?.phase === "pull" ? "Drawing run..." : "Writing receipt..."}
+          disabled={!follow.enabled || arcadeRunning}
           onClick={() => onRequestMissingInfo(incident)}
         >
           Request missing info
@@ -972,42 +1035,220 @@ function HandoffPanel({
   );
 }
 
-function MissingInfoPullPanel({ pull }: { pull: MissingInfoPullState }) {
+function MissingInfoPullPanel({
+  pull,
+  onSelectSource,
+  onSelectAsk,
+  onLockTicket,
+}: {
+  pull: MissingInfoPullState;
+  onSelectSource: (choice: ArcadeChoice) => void;
+  onSelectAsk: (choice: ArcadeChoice) => void;
+  onLockTicket: () => void;
+}) {
   const phaseLabel =
-    pull.phase === "spinning"
-      ? "Drawing missing-info packet"
-      : pull.phase === "locked"
-        ? "Packet locked"
-        : pull.phase === "submitting"
-          ? "Writing audit receipt"
-          : pull.phase === "failed"
-            ? "Receipt not recorded"
-            : "Ticket printed";
+    pull.phase === "pull"
+      ? "Drawing dispatch run"
+      : pull.phase === "match"
+        ? "Match source"
+        : pull.phase === "ask"
+          ? "Choose safe ask"
+          : pull.phase === "lock"
+            ? "Lock request ticket"
+            : pull.phase === "submitting"
+              ? "Writing audit receipt"
+              : pull.phase === "failed"
+                ? "Receipt not recorded"
+                : "Ticket printed";
+  const sourceChoice = pull.run.sourceChoices.find((choice) => choice.id === pull.selectedSourceId);
+  const askChoice = pull.run.askChoices.find((choice) => choice.id === pull.selectedAskId);
+  const canLock = pull.phase === "lock" && sourceChoice?.correct && askChoice?.correct;
+  const finished = pull.phase === "printed" || pull.phase === "failed";
+
   return (
     <section data-testid="missing-info-pull" className={`relay-missing-pull mt-2 ${pull.phase === "printed" ? "relay-missing-pull--printed" : ""}`}>
-      <div className="border-b border-[#d7dee9] px-3 py-2">
+      <div data-testid="dispatch-arcade" className="border-b border-[#d7dee9] px-3 py-2">
         <div className="min-w-0">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.08em] text-[#0a1b3d]">Missing Info Pull</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-[0.08em] text-[#0a1b3d]">Dispatch Arcade</h3>
           <p className="mt-0.5 text-xs font-semibold text-[#536579]">{phaseLabel}</p>
         </div>
       </div>
       <div className="grid gap-2 p-2.5">
-        <div className="relay-reel-grid">
-          <ReelColumn label="Field" value={pull.packet.field} options={pull.packet.fieldOptions} spinning={pull.phase === "spinning"} />
-          <ReelColumn label="Source" value={pull.packet.source} options={pull.packet.sourceOptions} spinning={pull.phase === "spinning"} />
-          <ReelColumn label="Ask" value={pull.packet.ask} options={pull.packet.askOptions} spinning={pull.phase === "spinning"} />
+        <StageRail phase={pull.phase} />
+        <div className="relay-arcade-caller">
+          <SourceSignalBadge />
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#536579]">{pull.run.caller.label}</p>
+              <span className="rounded-[3px] bg-[#fff7df] px-1.5 py-0.5 text-[10px] font-semibold uppercase text-[#8a5b00]">simulated</span>
+            </div>
+            <p className="mt-1 text-sm font-semibold leading-5 text-[#0a1b3d]">{pull.run.caller.line}</p>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <SignalMeter label="pressure" value={pull.run.caller.stress} tone="amber" />
+              <SignalMeter label="clarity" value={pull.run.caller.clarity} tone="blue" />
+            </div>
+          </div>
         </div>
+        <div className="relay-reel-grid">
+          <ReelColumn label="Field" value={pull.run.packet.field} options={pull.run.packet.fieldOptions} spinning={pull.phase === "pull"} />
+          <ReelColumn label="Source" value={pull.run.packet.source} options={pull.run.packet.sourceOptions} spinning={pull.phase === "pull"} />
+          <ReelColumn label="Ask" value={pull.run.packet.ask} options={pull.run.packet.askOptions} spinning={pull.phase === "pull"} />
+        </div>
+        <ArcadeChoiceSet
+          title="1. Match the source"
+          body="Pick the evidence this ticket can quote. Context and summaries are not enough."
+          choices={pull.run.sourceChoices}
+          selectedId={pull.selectedSourceId}
+          feedback={pull.sourceFeedback}
+          disabled={pull.phase === "pull" || pull.phase === "submitting" || finished}
+          onSelect={onSelectSource}
+        />
+        <ArcadeChoiceSet
+          title="2. Choose the ask"
+          body="Use the narrowest callback phrasing. Unsafe or assumptive asks stay blocked."
+          choices={pull.run.askChoices}
+          selectedId={pull.selectedAskId}
+          feedback={pull.askFeedback}
+          disabled={!sourceChoice?.correct || pull.phase === "pull" || pull.phase === "submitting" || finished}
+          onSelect={onSelectAsk}
+        />
+        {pull.score ? <ArcadeScorePanel score={pull.score} /> : null}
         <div data-testid="missing-info-ticket" className="rounded-[3px] border border-[#d7dee9] bg-white px-3 py-2">
           <div className="grid gap-1 min-[480px]:flex min-[480px]:items-center min-[480px]:justify-between min-[480px]:gap-3">
             <p className="text-xs font-semibold uppercase text-[#536579]">{pull.phase === "printed" ? "Request ticket" : "Ticket preview"}</p>
-            <span className="text-xs font-semibold text-[#9a6700]">{pull.packet.source}</span>
+            <span className="text-xs font-semibold text-[#9a6700]">{pull.run.packet.source}</span>
           </div>
-          <p className="mt-1 text-sm font-semibold leading-5 text-[#0a1b3d]">{pull.packet.field}</p>
-          <p className="mt-1 text-xs leading-5 text-[#536579]">{pull.packet.ticketAsk}</p>
-          <p className="mt-2 border-t border-[#d7dee9] pt-2 text-xs leading-5 text-[#536579]">{pull.packet.sourceExcerpt}</p>
+          <p className="mt-1 text-sm font-semibold leading-5 text-[#0a1b3d]">{pull.run.packet.field}</p>
+          <p className="mt-1 text-xs leading-5 text-[#536579]">{pull.run.packet.ticketAsk}</p>
+          <p className="mt-2 border-t border-[#d7dee9] pt-2 text-xs leading-5 text-[#536579]">{pull.run.packet.sourceExcerpt}</p>
         </div>
+        <button
+          data-testid="arcade-lock-ticket"
+          type="button"
+          disabled={!canLock || pull.phase === "submitting"}
+          onClick={onLockTicket}
+          className={`min-h-10 rounded-[3px] border px-3 py-2 text-sm font-semibold ${
+            canLock ? "border-[#2454d6] bg-[#2454d6] text-white hover:bg-[#1d45ad]" : "border-[#d2d9e3] bg-[#eef2f6] text-[#5d6878]"
+          }`}
+        >
+          {pull.phase === "submitting" ? "Writing receipt..." : pull.phase === "printed" ? "Ticket printed" : "Lock request ticket"}
+        </button>
       </div>
     </section>
+  );
+}
+
+function StageRail({ phase }: { phase: MissingInfoPullPhase }) {
+  const order = ["pull", "match", "ask", "lock"] as const;
+  const activeIndex = phase === "submitting" || phase === "printed" || phase === "failed" ? order.length : Math.max(order.indexOf(phase as (typeof order)[number]), 0);
+  return (
+    <div className="relay-arcade-stages" aria-label="Dispatch arcade stages">
+      {order.map((stage, index) => (
+        <div key={stage} className={`relay-arcade-stage ${index < activeIndex ? "relay-arcade-stage--done" : index === activeIndex ? "relay-arcade-stage--active" : ""}`}>
+          <span>{String(index + 1).padStart(2, "0")}</span>
+          <p>{stage === "pull" ? "Pull" : stage === "match" ? "Source" : stage === "ask" ? "Ask" : "Lock"}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SourceSignalBadge() {
+  return (
+    <div className="relay-source-signal" aria-hidden="true">
+      <svg viewBox="0 0 64 64" role="img">
+        <rect x="10" y="12" width="44" height="40" rx="3" fill="#f8fafc" stroke="#2454d6" strokeWidth="3" />
+        <path d="M17 35h6l4-13 7 27 5-18h8" fill="none" stroke="#152033" strokeLinecap="square" strokeWidth="3" />
+        <path d="M18 22h28M18 46h16" stroke="#8a5b00" strokeLinecap="square" strokeWidth="3" />
+      </svg>
+    </div>
+  );
+}
+
+function SignalMeter({ label, value, tone }: { label: string; value: number; tone: "amber" | "blue" }) {
+  return (
+    <div>
+      <div className="mb-1 flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#536579]">
+        <span>{label}</span>
+        <span>{value}</span>
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-[2px] bg-[#d2d9e3]">
+        <div className={tone === "amber" ? "h-full bg-[#8a5b00]" : "h-full bg-[#2454d6]"} style={{ width: `${Math.max(0, Math.min(100, value))}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function ArcadeChoiceSet({
+  title,
+  body,
+  choices,
+  selectedId,
+  feedback,
+  disabled,
+  onSelect,
+}: {
+  title: string;
+  body: string;
+  choices: ArcadeChoice[];
+  selectedId?: string;
+  feedback?: string;
+  disabled: boolean;
+  onSelect: (choice: ArcadeChoice) => void;
+}) {
+  const selected = choices.find((choice) => choice.id === selectedId);
+  return (
+    <section className="rounded-[3px] border border-[#d7dee9] bg-white p-2">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h4 className="text-xs font-semibold uppercase tracking-[0.08em] text-[#0a1b3d]">{title}</h4>
+          <p className="mt-1 text-xs leading-5 text-[#536579]">{body}</p>
+        </div>
+        {selected ? <span className={`relay-choice-chip relay-choice-chip--${selected.tone}`}>{selected.correct ? "locked" : "retry"}</span> : null}
+      </div>
+      <div className="mt-2 grid gap-2">
+        {choices.map((choice) => (
+          <button
+            key={choice.id}
+            type="button"
+            disabled={disabled}
+            onClick={() => onSelect(choice)}
+            className={`relay-arcade-choice relay-arcade-choice--${choice.tone} ${selectedId === choice.id ? "relay-arcade-choice--selected" : ""}`}
+          >
+            <span>{choice.label}</span>
+            <p>{choice.body}</p>
+          </button>
+        ))}
+      </div>
+      {feedback ? <p className={`mt-2 rounded-[3px] px-2 py-1.5 text-xs font-semibold ${selected?.correct ? "bg-[#eefaf2] text-[#16794c]" : "bg-[#fff7df] text-[#8a5b00]"}`}>{feedback}</p> : null}
+    </section>
+  );
+}
+
+function ArcadeScorePanel({ score }: { score: DispatchArcadeScore }) {
+  return (
+    <section data-testid="arcade-score" className="rounded-[3px] border border-[#d7dee9] bg-[#f8fafc] p-2">
+      <div className="flex items-center justify-between gap-3">
+        <h4 className="text-xs font-semibold uppercase tracking-[0.08em] text-[#0a1b3d]">Run score</h4>
+        <span className="text-sm font-semibold text-[#2454d6]">{score.total}</span>
+      </div>
+      <div className="mt-2 grid grid-cols-2 gap-2 text-xs min-[480px]:grid-cols-4">
+        <ScoreCell label="source" value={score.sourceDiscipline} />
+        <ScoreCell label="safety" value={score.safety} />
+        <ScoreCell label="clarity" value={score.clarity} />
+        <ScoreCell label="speed" value={score.speed} />
+      </div>
+      <p className="mt-2 text-xs font-semibold text-[#0a1b3d]">{score.label}</p>
+    </section>
+  );
+}
+
+function ScoreCell({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="rounded-[3px] border border-[#d7dee9] bg-white px-2 py-1">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#536579]">{label}</p>
+      <p className="text-sm font-semibold text-[#0a1b3d]">{value}</p>
+    </div>
   );
 }
 
@@ -1267,16 +1508,17 @@ function ReviewActionButton({
   primary?: boolean;
   onClick: () => void;
 }) {
+  const tone = disabled
+    ? "border-[#c8d0dc] bg-[#eef2f6] text-[#7b8797]"
+    : primary
+      ? "border-[#1652f0] bg-[#1652f0] text-white hover:bg-[#0f45d8]"
+      : "border-[#cfd8e5] bg-white text-[#0a1b3d] hover:border-[#1652f0]";
   return (
     <button
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className={`min-h-10 w-full rounded-[3px] border px-3 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 disabled:cursor-not-allowed disabled:border-[#c8d0dc] disabled:bg-[#eef2f6] disabled:text-[#7b8797] ${
-        primary
-          ? "border-[#1652f0] bg-[#1652f0] text-white hover:bg-[#0f45d8]"
-          : "border-[#cfd8e5] bg-white text-[#0a1b3d] hover:border-[#1652f0]"
-      }`}
+      className={`min-h-10 w-full rounded-[3px] border px-3 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 disabled:cursor-not-allowed ${tone}`}
     >
       {loading ? loadingLabel ?? "Working..." : children}
     </button>
