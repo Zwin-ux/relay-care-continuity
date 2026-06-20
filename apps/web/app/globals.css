@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --font-sans: Arial, Helvetica, sans-serif;
+  --font-sans: var(--fontFamily-body, "Aptos"), "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", "Courier New", monospace;
 }
 
@@ -13,7 +13,7 @@
 
 body {
   margin: 0;
-  background: #eef3f8;
+  background: #e8eef5;
   color: #0A1B3D;
   font-family: var(--font-sans);
 }
@@ -35,14 +35,14 @@ button, input, textarea {
 
 .relay-cds-shell {
   background:
-    linear-gradient(180deg, rgba(248, 251, 255, 0.96) 0%, rgba(238, 243, 248, 1) 40%, rgba(233, 239, 246, 1) 100%);
+    linear-gradient(180deg, rgba(247, 250, 253, 0.98) 0%, rgba(232, 238, 245, 1) 46%, rgba(223, 231, 240, 1) 100%);
 }
 
 .relay-panel {
-  border: 1px solid #d7dee9;
-  border-radius: 12px;
+  border: 1px solid #cfd8e5;
+  border-radius: 10px;
   background: #ffffff;
-  box-shadow: 0 6px 16px rgba(10, 27, 61, 0.06);
+  box-shadow: 0 1px 0 rgba(10, 27, 61, 0.04);
 }
 
 .relay-elevated {
