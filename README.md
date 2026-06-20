@@ -8,6 +8,14 @@ The current competition slice is intentionally narrow: one wildfire/community-ce
 
 Replay uses mock data. No live dispatch or emergency-service connection.
 
+## Live Proof
+
+Latest live smoke: June 20, 2026. The Vercel preview loaded cleanly at desktop and mobile sizes with no browser console errors.
+
+| Desktop | Mobile |
+| --- | --- |
+| ![RELAY desktop preview](showcase/relay-care-desktop.png) | ![RELAY mobile preview](showcase/relay-care-mobile.png) |
+
 ## Public Links
 
 - Live preview: https://web-zwin-uxs-projects.vercel.app
