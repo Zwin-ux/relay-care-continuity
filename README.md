@@ -31,7 +31,7 @@ If you are scanning the repo quickly:
 
 ## Live Proof
 
-Latest design-review smoke: June 20, 2026. gstack browse loaded the populated desktop and mobile workspace against the local API with no browser console errors.
+Latest production smoke: June 20, 2026. gstack browse loaded the populated desktop and mobile workspace on the Vercel production alias with no browser console errors.
 
 | Desktop | Mobile |
 | --- | --- |
