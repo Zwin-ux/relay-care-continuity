@@ -114,6 +114,104 @@ button, input, textarea {
   box-shadow: inset 3px 0 0 var(--relay-blue);
 }
 
+.relay-missing-pull {
+  overflow: hidden;
+  border: 1px solid var(--relay-line-strong);
+  border-radius: 3px;
+  background: #f8fafc;
+}
+
+.relay-missing-pull--printed {
+  border-color: #b8e7c9;
+  background: #f8fcfa;
+}
+
+.relay-reel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.relay-reel-window {
+  position: relative;
+  height: 42px;
+  overflow: hidden;
+  border: 1px solid var(--relay-line);
+  border-radius: 3px;
+  background: #ffffff;
+}
+
+.relay-reel-window::before,
+.relay-reel-window::after {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  height: 10px;
+  content: "";
+  pointer-events: none;
+}
+
+.relay-reel-window::before {
+  top: 0;
+  background: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0));
+}
+
+.relay-reel-window::after {
+  bottom: 0;
+  background: linear-gradient(0deg, #ffffff, rgba(255, 255, 255, 0));
+}
+
+.relay-reel-track {
+  display: grid;
+  gap: 6px;
+  padding: 6px;
+}
+
+.relay-reel-track--spinning {
+  animation: relay-reel-spin 420ms linear infinite;
+}
+
+.relay-reel-item {
+  min-height: 28px;
+  overflow: hidden;
+  border-left: 3px solid var(--relay-blue);
+  padding: 5px 8px;
+  color: var(--relay-ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.relay-reel-window--spinning .relay-reel-item {
+  border-left-color: #d7a300;
+}
+
+@keyframes relay-reel-spin {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-68px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .relay-reel-track--spinning {
+    animation: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .relay-reel-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (min-width: 1120px) {
   .relay-workspace {
     display: grid;

@@ -40,6 +40,8 @@ const emptySnapshot = {
   selected_incident: null,
 };
 
+const ledgerHeading = { name: "Continuity Ledger" };
+
 async function loadAndGroup(page: import("@playwright/test").Page) {
   await page.goto("/");
   try {
@@ -69,7 +71,7 @@ test("first-run workspace starts from the ledger, not an onboarding shell", asyn
   await page.goto("/");
   await expect(page.getByTestId("care-continuity-onboarding")).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Incoming Reports" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Care Continuity Ledger" })).toBeVisible();
+  await expect(page.getByRole("heading", ledgerHeading)).toBeVisible();
   await expect(page.getByRole("heading", { name: "Continuity Review" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Load reports" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Group reports" })).toBeVisible();
@@ -83,7 +85,7 @@ test("first-run workspace starts from the ledger, not an onboarding shell", asyn
   await page.getByRole("button", { name: "Load reports" }).click();
   await expect(page.getByText("30 reports").first()).toBeVisible({ timeout: 15_000 });
   await page.getByRole("button", { name: "Group reports" }).click();
-  await expect(page.getByRole("heading", { name: "Care Continuity Ledger" })).toBeVisible();
+  await expect(page.getByRole("heading", ledgerHeading)).toBeVisible();
   await expect(page.getByText("Medication continuity").first()).toBeVisible();
   const medication = page.getByTestId(/continuity-task-/).filter({ hasText: "Medication continuity" }).first();
   await expect(medication).toHaveAttribute("aria-pressed", "true");
@@ -95,11 +97,11 @@ test("opens the care-continuity workspace above the fold", async ({ page }) => {
   await loadAndGroup(page);
 
   await expect(page.getByTestId("care-continuity-onboarding")).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "Care Continuity Ledger" })).toBeVisible();
+  await expect(page.getByRole("heading", ledgerHeading)).toBeVisible();
   await expect(page.getByRole("heading", { name: "Continuity Review" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Incoming Reports" })).toBeVisible();
 
-  const ledgerBox = await page.getByRole("heading", { name: "Care Continuity Ledger" }).boundingBox();
+  const ledgerBox = await page.getByRole("heading", ledgerHeading).boundingBox();
   expect(ledgerBox).not.toBeNull();
   expect(ledgerBox!.y).toBeLessThan(760);
 
@@ -113,12 +115,12 @@ test("loads reports into the care continuity workspace", async ({ page }) => {
   await loadAndGroup(page);
 
   await expect(page.getByRole("heading", { name: "RELAY" })).toBeVisible();
-  await expect(page.getByText("Care Continuity", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Local reports grouped for evacuation shelter review.")).toBeVisible();
+  await expect(page.getByText("Care continuity desk").first()).toBeVisible();
+  await expect(page.getByText("Evacuation shelter reports, source links, and blocked handoff review.")).toBeVisible();
   await expect(page.getByText(/Context only\. Source reports still require review\./)).toBeVisible();
   await expect(page.getByLabel("Activate location")).toHaveValue("wildfire_santa_rosa");
   await expect(page.getByRole("heading", { name: "Incoming Reports" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Care Continuity Ledger" })).toBeVisible();
+  await expect(page.getByRole("heading", ledgerHeading)).toBeVisible();
   await expect(page.getByRole("heading", { name: "Continuity Review" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Required information" })).toBeVisible();
   await expect(page.getByText(/Live context|Context fallback/)).toBeVisible();
@@ -162,9 +164,15 @@ test("requesting missing info records a receipt without changing the selected le
   const selectedId = await firstTask.getAttribute("data-testid");
   await page.getByRole("button", { name: "Request missing info" }).click();
 
+  await expect(page.getByTestId("missing-info-pull")).toBeVisible();
+  await expect(page.getByText("Missing Info Pull")).toBeVisible();
+  await expect(page.getByText("Confirm recipient identity").first()).toBeVisible();
+  await expect(page.getByText("Text report 01").first()).toBeVisible();
+  await expect(page.getByText("Ticket printed")).toBeVisible({ timeout: 20_000 });
   await expect(page.getByText("Operation recorded")).toBeVisible({ timeout: 20_000 });
   await expect(page.getByText("Handoff unavailable").first()).toBeVisible();
   await expect(page.locator(`[data-testid="${selectedId}"]`)).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Mark ready for handoff" })).toBeDisabled();
 });
 
 test("desktop layout keeps the three main zones in one row", async ({ page }) => {
@@ -172,7 +180,7 @@ test("desktop layout keeps the three main zones in one row", async ({ page }) =>
   await loadAndGroup(page);
 
   const reports = await page.getByRole("heading", { name: "Incoming Reports" }).boundingBox();
-  const ledger = await page.getByRole("heading", { name: "Care Continuity Ledger" }).boundingBox();
+  const ledger = await page.getByRole("heading", ledgerHeading).boundingBox();
   const review = await page.getByRole("heading", { name: "Continuity Review" }).boundingBox();
 
   expect(reports).not.toBeNull();
@@ -220,7 +228,7 @@ test("mobile layout keeps core care-continuity surfaces reachable", async ({ pag
 
   await expect(page.getByRole("heading", { name: "RELAY" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Incoming Reports" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Care Continuity Ledger" })).toBeVisible();
+  await expect(page.getByRole("heading", ledgerHeading)).toBeVisible();
   await expect(page.getByRole("heading", { name: "Continuity Review" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Mark ready for handoff" })).toBeDisabled();
 });

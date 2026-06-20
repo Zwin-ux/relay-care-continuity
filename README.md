@@ -19,6 +19,7 @@ If you are scanning the repo quickly:
 - Click `Load reports` to load the 30-source-report wildfire replay.
 - Click `Group reports` to create the 9-item continuity ledger.
 - Open `Medication continuity` to see source links, six open fields, an unsafe insulin claim hold, and a disabled handoff action.
+- Click `Request missing info` to print the missing-info pull: field, source, ask, and audit receipt.
 - Open `/proof` to inspect the public-safe run receipt.
 
 ## Why Review This Repo
@@ -36,6 +37,12 @@ Latest production smoke: June 20, 2026. gstack browse loaded the populated deskt
 | Desktop | Mobile |
 | --- | --- |
 | ![RELAY desktop preview](showcase/relay-care-desktop.png) | ![RELAY mobile preview](showcase/relay-care-mobile.png) |
+
+Missing-info pull:
+
+| Desktop pull | Mobile pull |
+| --- | --- |
+| ![RELAY missing-info pull desktop](showcase/relay-missing-info-pull-desktop.png) | ![RELAY missing-info pull mobile](showcase/relay-missing-info-pull-mobile-panel.png) |
 
 Motion capture:
 

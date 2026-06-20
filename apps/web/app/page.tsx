@@ -26,9 +26,17 @@ import { getActionAvailability } from "@/lib/relayActions";
 import { OperationReceipt, useRelayMutation, useRelaySnapshot } from "@/lib/relayHooks";
 import { relayTokens } from "@/lib/relayTokens";
 import { formatTime, missingItemsForDisplay, sanitizeOperationMessage } from "@/lib/relayViewModel";
+import { buildMissingInfoPullPacket, MissingInfoPullPacket } from "@/lib/missingInfoPull";
 
 type ReportFilter = "All" | "Critical" | "Missing info" | "Unsafe claim";
 type CommandAction = "load" | "triage" | "follow" | "verify" | "dispatch" | "escalate" | "activate_location";
+type MissingInfoPullPhase = "spinning" | "locked" | "submitting" | "printed" | "failed";
+type MissingInfoPullState = {
+  requestId: string;
+  incidentId: string;
+  phase: MissingInfoPullPhase;
+  packet: MissingInfoPullPacket;
+};
 
 const reportFilters: ReportFilter[] = ["All", "Critical", "Missing info", "Unsafe claim"];
 
@@ -41,6 +49,7 @@ export default function Page() {
   const [liveContext, setLiveContext] = useState<LiveContextSignal>(() => fallbackLiveContext(getLocationPack()));
   const [liveContextLoading, setLiveContextLoading] = useState(false);
   const [manualReports, setManualReports] = useState<SourceReport[]>([]);
+  const [missingInfoPull, setMissingInfoPull] = useState<MissingInfoPullState | null>(null);
   const snapshotQuery = useRelaySnapshot(selectedId);
   const mutation = useRelayMutation({ selectedId, setSelectedId, setReceipt, setBlockedAction });
 
@@ -57,6 +66,10 @@ export default function Page() {
   useEffect(() => {
     if (!selectedId && tasks.length > 0) setSelectedId(preferredContinuityTaskId(tasks));
   }, [selectedId, tasks]);
+
+  useEffect(() => {
+    setMissingInfoPull((current) => (current && selectedId && current.incidentId !== selectedId ? null : current));
+  }, [selectedId]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -96,6 +109,38 @@ export default function Page() {
 
   const run = (type: CommandAction, id?: string) => {
     mutation.mutate({ type, id });
+  };
+
+  const requestMissingInfo = (incident: Incident) => {
+    const packet = buildMissingInfoPullPacket(incident);
+    if (!packet) {
+      run("follow", incident.id);
+      return;
+    }
+
+    const requestId = `${incident.id}-${Date.now()}`;
+    const reduceMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const lockDelay = reduceMotion ? 0 : 1100;
+    const submitDelay = reduceMotion ? 80 : 520;
+
+    setReceipt(null);
+    setBlockedAction(null);
+    setMissingInfoPull({ requestId, incidentId: incident.id, phase: reduceMotion ? "locked" : "spinning", packet });
+
+    window.setTimeout(() => {
+      setMissingInfoPull((current) => (current?.requestId === requestId ? { ...current, phase: "locked" } : current));
+      window.setTimeout(() => {
+        setMissingInfoPull((current) => (current?.requestId === requestId ? { ...current, phase: "submitting" } : current));
+        mutation
+          .mutateAsync({ type: "follow", id: incident.id })
+          .then(() => {
+            setMissingInfoPull((current) => (current?.requestId === requestId ? { ...current, phase: "printed" } : current));
+          })
+          .catch(() => {
+            setMissingInfoPull((current) => (current?.requestId === requestId ? { ...current, phase: "failed" } : current));
+          });
+      }, submitDelay);
+    }, lockDelay);
   };
 
   const addManualReport = (text: string) => {
@@ -171,7 +216,9 @@ export default function Page() {
               blockedAction={blockedAction}
               mutationPending={mutation.isPending}
               mutationType={mutation.variables?.type}
+              missingInfoPull={missingInfoPull}
               onRun={run}
+              onRequestMissingInfo={requestMissingInfo}
             />
           </div>
         </main>
@@ -760,7 +807,9 @@ function ContinuityReview({
   blockedAction,
   mutationPending,
   mutationType,
+  missingInfoPull,
   onRun,
+  onRequestMissingInfo,
 }: {
   incident: Incident | null;
   selectedTask: ContinuityTask | null;
@@ -768,7 +817,9 @@ function ContinuityReview({
   blockedAction: { title: string; reason: string; nextStep?: string } | null;
   mutationPending: boolean;
   mutationType?: string;
+  missingInfoPull: MissingInfoPullState | null;
   onRun: (type: CommandAction, id?: string) => void;
+  onRequestMissingInfo: (incident: Incident) => void;
 }) {
   return (
     <aside className="flex min-h-[420px] min-w-0 flex-col overflow-hidden bg-[#fbfcfe] min-[1120px]:min-h-[520px]">
@@ -784,7 +835,15 @@ function ContinuityReview({
         {incident && selectedTask ? (
           <div className="grid gap-3">
             <ReviewHeader incident={incident} task={selectedTask} />
-            <HandoffPanel incident={incident} selectedTask={selectedTask} pending={mutationPending} pendingType={mutationType} onRun={onRun} />
+            <HandoffPanel
+              incident={incident}
+              selectedTask={selectedTask}
+              pending={mutationPending}
+              pendingType={mutationType}
+              missingInfoPull={missingInfoPull?.incidentId === incident.id ? missingInfoPull : null}
+              onRun={onRun}
+              onRequestMissingInfo={onRequestMissingInfo}
+            />
             <UnsafeClaimPanel task={selectedTask} />
             <MissingFieldLedger incident={incident} />
             {blockedAction ? (
@@ -849,19 +908,24 @@ function HandoffPanel({
   selectedTask,
   pending,
   pendingType,
+  missingInfoPull,
   onRun,
+  onRequestMissingInfo,
 }: {
   incident: Incident;
   selectedTask: ContinuityTask;
   pending: boolean;
   pendingType?: string;
+  missingInfoPull: MissingInfoPullState | null;
   onRun: (type: CommandAction, id?: string) => void;
+  onRequestMissingInfo: (incident: Incident) => void;
 }) {
   const missing = missingItemsForDisplay(incident);
   const handoff = getActionAvailability(incident, "dispatch");
   const verify = getActionAvailability(incident, "verify");
   const follow = getActionAvailability(incident, "follow");
   const supervisor = getActionAvailability(incident, "escalate");
+  const pullActive = missingInfoPull?.phase === "spinning" || missingInfoPull?.phase === "locked" || missingInfoPull?.phase === "submitting";
   const reason = missing.length > 0
     ? `${missing.length} required field${missing.length === 1 ? "" : "s"} still open: ${missing.join(", ")}.`
     : handoff.reason?.replace(/dispatch/gi, "handoff");
@@ -879,8 +943,15 @@ function HandoffPanel({
           </div>
         </div>
       </div>
+      {missingInfoPull ? <MissingInfoPullPanel pull={missingInfoPull} /> : null}
       <div className="mt-2 grid gap-2">
-        <ReviewActionButton primary loading={pending && pendingType === "follow"} disabled={!follow.enabled} onClick={() => onRun("follow", incident.id)}>
+        <ReviewActionButton
+          primary
+          loading={pullActive || (pending && pendingType === "follow")}
+          loadingLabel={missingInfoPull?.phase === "spinning" ? "Drawing packet..." : missingInfoPull?.phase === "locked" ? "Locking request..." : "Writing receipt..."}
+          disabled={!follow.enabled || pullActive}
+          onClick={() => onRequestMissingInfo(incident)}
+        >
           Request missing info
         </ReviewActionButton>
         <div className="grid gap-2">
@@ -898,6 +969,63 @@ function HandoffPanel({
         {selectedTask.unsafeClaims.length > 0 ? <p className="rounded-md bg-[#fff1ef] px-3 py-2 text-xs font-semibold text-[#c0352b]">Unsafe claim review required before handoff.</p> : null}
       </div>
     </section>
+  );
+}
+
+function MissingInfoPullPanel({ pull }: { pull: MissingInfoPullState }) {
+  const phaseLabel =
+    pull.phase === "spinning"
+      ? "Drawing missing-info packet"
+      : pull.phase === "locked"
+        ? "Packet locked"
+        : pull.phase === "submitting"
+          ? "Writing audit receipt"
+          : pull.phase === "failed"
+            ? "Receipt not recorded"
+            : "Ticket printed";
+  return (
+    <section data-testid="missing-info-pull" className={`relay-missing-pull mt-2 ${pull.phase === "printed" ? "relay-missing-pull--printed" : ""}`}>
+      <div className="border-b border-[#d7dee9] px-3 py-2">
+        <div className="min-w-0">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.08em] text-[#0a1b3d]">Missing Info Pull</h3>
+          <p className="mt-0.5 text-xs font-semibold text-[#536579]">{phaseLabel}</p>
+        </div>
+      </div>
+      <div className="grid gap-2 p-2.5">
+        <div className="relay-reel-grid">
+          <ReelColumn label="Field" value={pull.packet.field} options={pull.packet.fieldOptions} spinning={pull.phase === "spinning"} />
+          <ReelColumn label="Source" value={pull.packet.source} options={pull.packet.sourceOptions} spinning={pull.phase === "spinning"} />
+          <ReelColumn label="Ask" value={pull.packet.ask} options={pull.packet.askOptions} spinning={pull.phase === "spinning"} />
+        </div>
+        <div data-testid="missing-info-ticket" className="rounded-[3px] border border-[#d7dee9] bg-white px-3 py-2">
+          <div className="grid gap-1 min-[480px]:flex min-[480px]:items-center min-[480px]:justify-between min-[480px]:gap-3">
+            <p className="text-xs font-semibold uppercase text-[#536579]">{pull.phase === "printed" ? "Request ticket" : "Ticket preview"}</p>
+            <span className="text-xs font-semibold text-[#9a6700]">{pull.packet.source}</span>
+          </div>
+          <p className="mt-1 text-sm font-semibold leading-5 text-[#0a1b3d]">{pull.packet.field}</p>
+          <p className="mt-1 text-xs leading-5 text-[#536579]">{pull.packet.ticketAsk}</p>
+          <p className="mt-2 border-t border-[#d7dee9] pt-2 text-xs leading-5 text-[#536579]">{pull.packet.sourceExcerpt}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ReelColumn({ label, value, options, spinning }: { label: string; value: string; options: string[]; spinning: boolean }) {
+  const reelOptions = spinning ? [...options, ...options, value] : [value];
+  return (
+    <div className="min-w-0">
+      <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#657386]">{label}</p>
+      <div className={`relay-reel-window ${spinning ? "relay-reel-window--spinning" : ""}`}>
+        <div className={`relay-reel-track ${spinning ? "relay-reel-track--spinning" : ""}`}>
+          {reelOptions.map((option, index) => (
+            <div key={`${option}-${index}`} className="relay-reel-item">
+              {option}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -1128,12 +1256,14 @@ function ReviewActionButton({
   children,
   disabled,
   loading,
+  loadingLabel,
   primary,
   onClick,
 }: {
   children: React.ReactNode;
   disabled?: boolean;
   loading?: boolean;
+  loadingLabel?: string;
   primary?: boolean;
   onClick: () => void;
 }) {
@@ -1148,7 +1278,7 @@ function ReviewActionButton({
           : "border-[#cfd8e5] bg-white text-[#0a1b3d] hover:border-[#1652f0]"
       }`}
     >
-      {loading ? "Working..." : children}
+      {loading ? loadingLabel ?? "Working..." : children}
     </button>
   );
 }
