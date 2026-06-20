@@ -157,17 +157,23 @@ export default function Page() {
           data-testid="care-continuity-workspace"
           className="mt-3 grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-auto min-[1120px]:grid-cols-[310px_minmax(500px,1fr)_390px]"
         >
-          <IncomingReports reports={visibleReports} allReports={reports} filter={filter} onFilterChange={setFilter} onAddReport={addManualReport} loading={snapshotQuery.isLoading} />
-          <CareContinuityLedger tasks={tasks} selectedId={selectedTask?.incident_id ?? null} onSelect={setSelectedId} loading={snapshotQuery.isLoading} />
-          <ContinuityReview
-            incident={reviewIncident}
-            selectedTask={selectedTask}
-            receipt={receipt}
-            blockedAction={blockedAction}
-            mutationPending={mutation.isPending}
-            mutationType={mutation.variables?.type}
-            onRun={run}
-          />
+          <div className="order-2 min-w-0 min-[1120px]:order-1">
+            <IncomingReports reports={visibleReports} allReports={reports} filter={filter} onFilterChange={setFilter} onAddReport={addManualReport} loading={snapshotQuery.isLoading} />
+          </div>
+          <div className="order-1 min-w-0 min-[1120px]:order-2">
+            <CareContinuityLedger tasks={tasks} selectedId={selectedTask?.incident_id ?? null} onSelect={setSelectedId} loading={snapshotQuery.isLoading} />
+          </div>
+          <div className="order-3 min-w-0">
+            <ContinuityReview
+              incident={reviewIncident}
+              selectedTask={selectedTask}
+              receipt={receipt}
+              blockedAction={blockedAction}
+              mutationPending={mutation.isPending}
+              mutationType={mutation.variables?.type}
+              onRun={run}
+            />
+          </div>
         </main>
       )}
     </div>
@@ -192,7 +198,7 @@ function ActivationSignalStrip({ context, loading }: { context: LiveContextSigna
       </div>
       <div className="grid min-w-0 grid-cols-2 gap-2 min-[520px]:flex min-[520px]:items-center min-[520px]:justify-start min-[960px]:justify-end">
         <CdsTag tone={context.alerts.length ? "yellow" : "gray"}>{context.alerts.length} NWS alerts</CdsTag>
-        <a href="/proof" className="grid min-h-9 place-items-center rounded-lg border border-[#d7dee9] bg-white px-3 py-2 text-center text-xs font-semibold text-[#0a1b3d] hover:border-[#1652f0]">
+        <a href="/proof" className="grid min-h-11 place-items-center rounded-lg border border-[#d7dee9] bg-white px-3 py-2 text-center text-xs font-semibold text-[#0a1b3d] hover:border-[#1652f0] min-[960px]:min-h-9">
           Share proof brief
         </a>
       </div>
@@ -290,8 +296,8 @@ function CommandBar({
 
         <div className="thin-scroll grid min-w-0 grid-cols-2 gap-2 min-[760px]:flex min-[760px]:items-center min-[760px]:overflow-x-auto">
           <Meta label="Location" value={snapshot?.app.location_label ?? activePack.location.display} />
-          <Meta label="Context" value={`${snapshot?.app.hazard_type ?? activePack.hazard_type} ${snapshot?.app.site_type ?? activePack.site_type}`} />
-          <Meta label="Mode" value={snapshot?.app.model_mode === "ollama" ? "Local Gemma" : "Replay"} />
+          <Meta className="hidden min-[760px]:flex" label="Context" value={`${snapshot?.app.hazard_type ?? activePack.hazard_type} ${snapshot?.app.site_type ?? activePack.site_type}`} />
+          <Meta className="hidden min-[520px]:flex" label="Mode" value={snapshot?.app.model_mode === "ollama" ? "Local Gemma" : "Replay"} />
           <Meta label="Reports" value={String(counts.reports)} />
           <Meta label="Missing fields" value={String(counts.missingFields)} warn={counts.missingFields > 0} />
         </div>
@@ -304,7 +310,7 @@ function CommandBar({
                 value={activePack.id}
                 disabled={loading}
                 onChange={(event) => onRun("activate_location", event.target.value)}
-                className="w-full min-w-0 rounded-md border border-[#d7dee9] bg-white px-2 py-1.5 text-xs font-semibold text-[#0a1b3d] outline-none focus:border-[#1652f0] focus:ring-2 focus:ring-[#1652f0]/20"
+                className="min-h-10 w-full min-w-0 rounded-md border border-[#d7dee9] bg-white px-2 py-1.5 text-xs font-semibold text-[#0a1b3d] outline-none focus:border-[#1652f0] focus:ring-2 focus:ring-[#1652f0]/20 min-[760px]:min-h-0"
                 aria-label="Activate location"
               >
                 {locationPacks.map((pack) => (
@@ -317,7 +323,7 @@ function CommandBar({
             <div className="grid grid-cols-2 gap-2 min-[760px]:grid-cols-4 min-[1120px]:flex min-[1120px]:items-center min-[1120px]:justify-end">
               <a
                 href="/proof"
-                className="grid min-h-10 place-items-center rounded-lg border border-[#d7dee9] bg-white px-3 py-2 text-center text-sm font-semibold text-[#0a1b3d] transition hover:border-[#1652f0] focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30"
+                className="grid min-h-11 place-items-center rounded-lg border border-[#d7dee9] bg-white px-3 py-2 text-center text-sm font-semibold leading-tight text-[#0a1b3d] transition hover:border-[#1652f0] focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 min-[1120px]:min-h-10 min-[1120px]:whitespace-nowrap"
               >
                 Proof ledger
               </a>
@@ -356,7 +362,7 @@ function PublicContextStrip({
   const primary = items[0];
   const headline = "headline" in primary ? primary.headline : primary.label;
   return (
-    <section className="relay-panel mt-2 flex shrink-0 flex-col gap-2 px-3 py-2 min-[960px]:flex-row min-[960px]:items-center">
+    <section className="relay-panel mt-2 hidden shrink-0 flex-col gap-2 px-3 py-2 min-[760px]:flex min-[960px]:flex-row min-[960px]:items-center">
       <div className="grid min-w-0 flex-1 gap-1 min-[620px]:flex min-[620px]:items-center min-[620px]:gap-2">
         <CdsTag tone="gray">Local context</CdsTag>
         <p className="min-w-0 truncate text-sm font-medium text-[#0a1b3d]">{packLabel}: {headline}</p>
@@ -525,14 +531,14 @@ function IncomingReports({
         <Metric label="Unsafe claims" value={String(unsafe)} tone={unsafe ? "red" : "green"} />
       </div>
       <div className="border-b border-[#d7dee9] px-3 py-2">
-        <div className="flex flex-wrap gap-1.5">
+        <div className="thin-scroll flex gap-1.5 overflow-x-auto pb-0.5">
           {reportFilters.map((item) => (
             <button
               key={item}
               data-testid={`source-filter-${item.toLowerCase().replaceAll(" ", "-")}`}
               aria-pressed={filter === item}
               onClick={() => onFilterChange(item)}
-              className={`rounded-lg border px-2 py-1 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 ${
+              className={`min-h-11 shrink-0 rounded-lg border px-3 py-2 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 min-[520px]:min-h-0 min-[520px]:px-2 min-[520px]:py-1 ${
                 filter === item ? "border-[#1652f0] bg-[#1652f0] text-white" : "border-[#d7dee9] bg-white text-[#536579] hover:border-[#1652f0]/50 hover:text-[#0a1b3d]"
               }`}
             >
@@ -603,18 +609,18 @@ function LocalReportIntake({ onAddReport }: { onAddReport: (text: string) => voi
           id="local-source-report"
           value={value}
           onChange={(event) => setValue(event.target.value)}
-          placeholder="Example: shelter desk reports oxygen battery low"
-          className="min-w-0 flex-1 rounded-lg border border-[#d7dee9] bg-white px-3 py-2 text-sm text-[#0a1b3d] outline-none transition placeholder:text-[#7b8797] focus:border-[#1652f0] focus:ring-2 focus:ring-[#1652f0]/20"
+          placeholder="Add report note"
+          className="min-h-11 min-w-0 flex-1 rounded-lg border border-[#d7dee9] bg-white px-3 py-2 text-sm text-[#0a1b3d] outline-none transition placeholder:text-[#7b8797] focus:border-[#1652f0] focus:ring-2 focus:ring-[#1652f0]/20"
         />
         <button
           type="submit"
-          className="shrink-0 rounded-lg border border-[#1652f0] bg-[#1652f0] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#0f45d8] focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 disabled:border-[#b8c2d2] disabled:bg-[#d7dee9] disabled:text-[#536579]"
+          className="min-h-11 shrink-0 rounded-lg border border-[#1652f0] bg-[#1652f0] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#0f45d8] focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 disabled:border-[#b8c2d2] disabled:bg-[#d7dee9] disabled:text-[#536579]"
           disabled={!value.trim()}
         >
           Add
         </button>
       </div>
-      <p className="mt-1 text-xs leading-5 text-[#536579]">Added reports stay unverified until grouping and required-field review run.</p>
+      <p className="mt-1 hidden text-xs leading-5 text-[#536579] min-[520px]:block">Added reports stay unverified until grouping and required-field review run.</p>
     </form>
   );
 }
@@ -693,11 +699,11 @@ function ContinuityLedgerRow({ task, selected, onSelect }: { task: ContinuityTas
       data-testid={`continuity-task-${task.incident_id}`}
       aria-pressed={selected}
       onClick={onSelect}
-      className={`grid w-full min-w-0 grid-cols-[44px_1fr] gap-3 overflow-hidden rounded-xl border bg-white p-3 text-left transition focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 ${
-        selected ? "border-[#1652f0] shadow-[0_0_0_4px_rgba(22,82,240,0.10)]" : "border-[#d7dee9] hover:border-[#1652f0]/50"
+      className={`grid w-full min-w-0 grid-cols-[36px_1fr] gap-3 overflow-hidden rounded-lg border bg-white p-2.5 text-left transition focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 min-[520px]:p-3 ${
+        selected ? "border-[#1652f0] bg-[#f7faff] shadow-[inset_3px_0_0_#1652f0]" : "border-[#d7dee9] hover:border-[#1652f0]/50 hover:bg-[#f8fbff]"
       }`}
     >
-      <img src={relayTokens.careDomainIcons[task.careDomain]} alt="" className="size-11 rounded-xl" />
+      <img src={relayTokens.careDomainIcons[task.careDomain]} alt="" className="size-9 rounded-lg" />
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="min-w-0 truncate text-base font-semibold text-[#0a1b3d]">{task.title}</h2>
@@ -705,7 +711,7 @@ function ContinuityLedgerRow({ task, selected, onSelect }: { task: ContinuityTas
           <CdsTag tone={task.stateLabel.includes("Unsafe") ? "red" : task.handoffStatus === "Unavailable" ? "yellow" : "green"}>{task.stateLabel}</CdsTag>
         </div>
         <p className="mt-1 line-clamp-2 text-sm leading-5 text-[#536579]">{task.summary}</p>
-        <div className="mt-3 grid min-w-0 grid-cols-1 gap-2 text-xs text-[#536579] min-[520px]:grid-cols-2 min-[1360px]:grid-cols-4">
+        <div className="mt-2 grid min-w-0 gap-x-3 gap-y-1 border-t border-[#e6ebf2] pt-2 text-xs text-[#536579] min-[520px]:grid-cols-2 min-[1360px]:grid-cols-4">
           <TaskFact label="Source reports" value={task.sourceLinkLabel} />
           <TaskFact label="Missing fields" value={task.missingLabel} warn={task.missing_information_count > 0} />
           <TaskFact label="Review queue" value={task.candidateQueue} />
@@ -1003,8 +1009,8 @@ function Metric({ label, value, tone = "blue" }: { label: string; value: string;
 
 function TaskFact({ label, value, warn }: { label: string; value: string; warn?: boolean }) {
   return (
-    <div className="min-w-0 rounded-lg border border-[#d7dee9] bg-[#f8fafc] px-2 py-1.5">
-      <p className="truncate text-[11px] font-semibold uppercase text-[#536579]">{label}</p>
+    <div className="min-w-0">
+      <p className="truncate text-[10px] font-semibold uppercase tracking-[0.02em] text-[#7b8797]">{label}</p>
       <p className={`truncate text-xs font-semibold ${warn ? "text-[#9a6700]" : "text-[#0a1b3d]"}`}>{value}</p>
     </div>
   );
@@ -1050,7 +1056,7 @@ function CommandActionButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className={`min-h-10 rounded-lg border px-3 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 disabled:cursor-not-allowed disabled:opacity-55 ${
+      className={`min-h-11 rounded-lg border px-3 py-2 text-sm font-semibold leading-tight transition focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 disabled:cursor-not-allowed disabled:opacity-55 min-[1120px]:min-h-10 min-[1120px]:whitespace-nowrap ${
         primary
           ? "border-[#1652f0] bg-[#1652f0] text-white hover:bg-[#0f45d8]"
           : "border-[#d7dee9] bg-white text-[#0a1b3d] hover:border-[#1652f0]"
@@ -1061,9 +1067,9 @@ function CommandActionButton({
   );
 }
 
-function Meta({ label, value, warn }: { label: string; value: string; warn?: boolean }) {
+function Meta({ label, value, warn, className = "" }: { label: string; value: string; warn?: boolean; className?: string }) {
   return (
-    <span className="flex min-w-0 items-center gap-1 rounded-lg border border-[#d7dee9] bg-[#f8fafc] px-2 py-1 text-xs min-[760px]:shrink-0">
+    <span className={`flex min-w-0 items-center gap-1 rounded-lg border border-[#d7dee9] bg-[#f8fafc] px-2 py-1 text-xs min-[760px]:shrink-0 ${className}`}>
       <span className="shrink-0 font-semibold text-[#536579]">{label}:</span>
       <span className={`min-w-0 truncate font-semibold ${warn ? "text-[#9a6700]" : "text-[#0a1b3d]"}`}>{value}</span>
     </span>
