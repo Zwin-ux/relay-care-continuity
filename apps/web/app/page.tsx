@@ -5,7 +5,6 @@ import { Banner } from "@coinbase/cds-web/banner";
 import { Button } from "@coinbase/cds-web/buttons";
 import { ListCell } from "@coinbase/cds-web/cells";
 import { Spinner } from "@coinbase/cds-web/loaders";
-import { SectionHeader } from "@coinbase/cds-web/section-header";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@coinbase/cds-web/tables";
 import { Tag } from "@coinbase/cds-web/tag";
 import { api, BoardCard, Incident, Snapshot } from "@/lib/api";
@@ -141,6 +140,7 @@ export default function Page() {
       />
       <PublicContextStrip packLabel={activeLocationPack.location.display} contextLine={locationContextLine(activeLocationPack)} items={visibleContextItems} />
       <ActivationSignalStrip context={liveContext} loading={liveContextLoading} />
+      <WorkspaceJumpBar reports={counts.reports} items={tasks.length} open={counts.missingFields} />
 
       {snapshotQuery.error ? (
         <div className="mt-3">
@@ -155,15 +155,15 @@ export default function Page() {
       ) : (
         <main
           data-testid="care-continuity-workspace"
-          className="mt-2 grid min-h-0 flex-1 grid-cols-1 gap-2 overflow-auto min-[1120px]:grid-cols-[300px_minmax(560px,1fr)_380px]"
+          className="relay-workspace mt-2 grid min-h-0 flex-1 grid-cols-1 overflow-auto min-[1120px]:grid-cols-[300px_minmax(560px,1fr)_380px]"
         >
-          <div className="order-2 min-w-0 min-[1120px]:order-1">
+          <div id="relay-reports" className="relay-workspace-col order-2 min-w-0 scroll-mt-24 min-[1120px]:order-1">
             <IncomingReports reports={visibleReports} allReports={reports} filter={filter} onFilterChange={setFilter} onAddReport={addManualReport} loading={snapshotQuery.isLoading} />
           </div>
-          <div className="order-1 min-w-0 min-[1120px]:order-2">
+          <div id="relay-ledger" className="relay-workspace-col relay-workspace-col--primary order-1 min-w-0 scroll-mt-24 min-[1120px]:order-2">
             <CareContinuityLedger tasks={tasks} selectedId={selectedTask?.incident_id ?? null} onSelect={setSelectedId} loading={snapshotQuery.isLoading} />
           </div>
-          <div className="order-3 min-w-0">
+          <div id="relay-review" className="relay-workspace-col order-3 min-w-0 scroll-mt-24">
             <ContinuityReview
               incident={reviewIncident}
               selectedTask={selectedTask}
@@ -183,7 +183,7 @@ export default function Page() {
 function ActivationSignalStrip({ context, loading }: { context: LiveContextSignal; loading: boolean }) {
   const primaryAlert = context.alerts[0];
   return (
-    <section className="relay-panel mt-1 grid shrink-0 gap-1 px-3 py-2 min-[960px]:mt-2 min-[960px]:grid-cols-[220px_minmax(0,1fr)_260px] min-[960px]:items-center">
+    <section className="relay-context-strip relay-live-strip mt-1 grid shrink-0 gap-1 px-3 py-2 min-[960px]:mt-2 min-[960px]:grid-cols-[220px_minmax(0,1fr)_260px] min-[960px]:items-center">
       <div className="flex min-w-0 items-center gap-2">
         <CdsTag tone={context.status === "live" ? "green" : "yellow"}>{context.status === "live" ? "Live context" : "Context fallback"}</CdsTag>
         <p className="truncate text-sm font-semibold text-[#0a1b3d]">{context.location}</p>
@@ -281,36 +281,36 @@ function CommandBar({
 }) {
   const activePack = locationPackFromSnapshot(snapshot);
   return (
-    <header className="relay-panel shrink-0 px-3 py-3 min-[1120px]:py-2">
-      <div className="grid min-h-[64px] gap-3 min-[1120px]:grid-cols-[370px_minmax(380px,1fr)_auto] min-[1120px]:items-center">
+    <header className="relay-commandbar shrink-0 px-3 py-2">
+      <div className="grid min-h-[58px] gap-3 min-[1120px]:grid-cols-[330px_minmax(380px,1fr)_auto] min-[1120px]:items-center">
         <div className="flex min-w-0 items-center gap-3">
-          <img src={relayTokens.assets.logo} alt="" className="size-9 rounded-xl" />
+          <img src={relayTokens.assets.logo} alt="" className="size-9 rounded-[3px]" />
           <div className="min-w-0">
-            <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <div className="flex min-w-0 items-baseline gap-2">
               <h1 className="text-xl font-semibold tracking-tight">RELAY</h1>
-              <CdsTag tone="blue">Care Continuity</CdsTag>
+              <span className="truncate text-xs font-semibold uppercase text-[#536579]">Care continuity desk</span>
             </div>
-            <p className="mt-0.5 truncate text-sm text-[#536579]">Local reports grouped for evacuation shelter review.</p>
+            <p className="mt-0.5 truncate text-sm text-[#536579]">Evacuation shelter reports, source links, and blocked handoff review.</p>
           </div>
         </div>
 
-        <div className="thin-scroll grid min-w-0 grid-cols-2 gap-2 min-[760px]:flex min-[760px]:items-center min-[760px]:overflow-x-auto">
+        <div className="thin-scroll grid min-w-0 grid-cols-2 gap-x-3 gap-y-1 min-[760px]:flex min-[760px]:items-center min-[760px]:overflow-x-auto">
           <Meta label="Location" value={snapshot?.app.location_label ?? activePack.location.display} />
-          <Meta className="hidden min-[760px]:flex" label="Context" value={`${snapshot?.app.hazard_type ?? activePack.hazard_type} ${snapshot?.app.site_type ?? activePack.site_type}`} />
+          <Meta className="hidden min-[760px]:flex" label="Pack" value={activePack.short_label} />
           <Meta className="hidden min-[520px]:flex" label="Mode" value={snapshot?.app.model_mode === "ollama" ? "Local Gemma" : "Replay"} />
           <Meta label="Reports" value={String(counts.reports)} />
-          <Meta label="Missing fields" value={String(counts.missingFields)} warn={counts.missingFields > 0} />
+          <Meta label="Open" value={String(counts.missingFields)} warn={counts.missingFields > 0} />
         </div>
 
         {showActions ? (
           <div className="grid w-full shrink-0 gap-2 min-[1120px]:w-auto min-[1120px]:justify-end">
-            <label className="grid min-w-0 gap-1 rounded-lg border border-[#d7dee9] bg-[#f8fafc] px-2 py-1.5 text-xs font-semibold text-[#536579] min-[760px]:grid-cols-[auto_minmax(190px,1fr)] min-[760px]:items-center">
-              <span>Activate location</span>
+            <label className="grid min-w-0 gap-1 border border-[#d7dee9] bg-[#f8fafc] px-2 py-1.5 text-xs font-semibold text-[#536579] min-[760px]:grid-cols-[auto_minmax(190px,1fr)] min-[760px]:items-center">
+              <span>Location pack</span>
               <select
                 value={activePack.id}
                 disabled={loading}
                 onChange={(event) => onRun("activate_location", event.target.value)}
-                className="min-h-10 w-full min-w-0 rounded-md border border-[#d7dee9] bg-white px-2 py-1.5 text-xs font-semibold text-[#0a1b3d] outline-none focus:border-[#1652f0] focus:ring-2 focus:ring-[#1652f0]/20 min-[760px]:min-h-0"
+                className="min-h-10 w-full min-w-0 rounded-[3px] border border-[#d7dee9] bg-white px-2 py-1.5 text-xs font-semibold text-[#0a1b3d] outline-none focus:border-[#1652f0] focus:ring-2 focus:ring-[#1652f0]/20 min-[760px]:min-h-0"
                 aria-label="Activate location"
               >
                 {locationPacks.map((pack) => (
@@ -362,7 +362,7 @@ function PublicContextStrip({
   const primary = items[0];
   const headline = "headline" in primary ? primary.headline : primary.label;
   return (
-    <section className="relay-panel mt-2 hidden shrink-0 flex-col gap-2 px-3 py-2 min-[760px]:flex min-[960px]:flex-row min-[960px]:items-center">
+    <section className="relay-context-strip mt-2 hidden shrink-0 flex-col gap-2 px-3 py-2 min-[760px]:flex min-[960px]:flex-row min-[960px]:items-center">
       <div className="grid min-w-0 flex-1 gap-1 min-[620px]:flex min-[620px]:items-center min-[620px]:gap-2">
         <CdsTag tone="gray">Local context</CdsTag>
         <p className="min-w-0 truncate text-sm font-medium text-[#0a1b3d]">{packLabel}: {headline}</p>
@@ -500,6 +500,18 @@ function BoundaryRow({ label, value, tone }: { label: string; value: string; ton
   );
 }
 
+function WorkspacePanelHeader({ title, description, end }: { title: string; description: string; end?: React.ReactNode }) {
+  return (
+    <div className="relay-section-band grid gap-2 px-4 py-3 min-[520px]:grid-cols-[minmax(0,1fr)_auto] min-[520px]:items-start">
+      <div className="min-w-0">
+        <h2 className="text-base font-semibold tracking-tight text-[#0a1b3d]">{title}</h2>
+        <p className="mt-1 line-clamp-2 text-sm leading-5 text-[#536579]">{description}</p>
+      </div>
+      {end ? <div className="flex min-[520px]:justify-end">{end}</div> : null}
+    </div>
+  );
+}
+
 function IncomingReports({
   reports,
   allReports,
@@ -519,12 +531,11 @@ function IncomingReports({
   const missing = allReports.filter((report) => report.stateLabel === "Missing info").length;
 
   return (
-    <aside className="relay-panel flex min-h-[420px] min-w-0 flex-col overflow-hidden min-[1120px]:min-h-[520px]">
-      <SectionHeader
+    <aside className="flex min-h-[420px] min-w-0 flex-col overflow-hidden bg-white min-[1120px]:min-h-[520px]">
+      <WorkspacePanelHeader
         title="Incoming Reports"
         description="Source reports grouped by care need and source. Conflicts stay visible."
         end={<CdsTag tone="gray">{allReports.length} reports</CdsTag>}
-        className="border-b border-[#d7dee9] px-4 py-3"
       />
       <div className="grid grid-cols-2 gap-2 border-b border-[#d7dee9] px-3 py-2">
         <Metric label="Missing info" value={String(missing)} tone={missing ? "yellow" : "green"} />
@@ -665,8 +676,8 @@ function CareContinuityLedger({
   const unsafe = tasks.reduce((sum, task) => sum + task.unsafeClaims.length, 0);
 
   return (
-    <section className="relay-panel flex min-h-[390px] min-w-0 flex-col overflow-hidden min-[1120px]:min-h-[520px]">
-      <div className="grid gap-2 border-b border-[#cfd8e5] bg-[#fbfcfe] px-3 py-2 min-[620px]:grid-cols-[minmax(0,1fr)_auto] min-[620px]:items-center">
+    <section className="flex min-h-[390px] min-w-0 flex-col overflow-hidden bg-white min-[1120px]:min-h-[520px]">
+      <div className="relay-section-band grid gap-2 px-3 py-2 min-[620px]:grid-cols-[minmax(0,1fr)_auto] min-[620px]:items-center">
         <div className="min-w-0">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <h3 className="text-base font-semibold tracking-tight text-[#0a1b3d]">Continuity Ledger</h3>
@@ -680,11 +691,17 @@ function CareContinuityLedger({
           <LedgerStat label="ready" value={String(tasks.filter((task) => task.handoffStatus === "Ready for review").length)} tone="green" />
         </div>
       </div>
-      <div className="thin-scroll min-h-0 flex-1 overflow-auto bg-[#f6f9fc] p-1.5">
+      <div className="thin-scroll min-h-0 flex-1 overflow-auto bg-white">
         {loading ? <LoadingState label="Loading continuity ledger" /> : null}
         {!loading && tasks.length === 0 ? <LedgerLaunch /> : null}
         {!loading && tasks.length > 0 ? (
-          <div className="grid gap-1">
+          <div className="grid">
+            <div className="sticky top-0 z-10 hidden grid-cols-[40px_minmax(0,1.25fr)_minmax(190px,0.85fr)_130px] gap-2 border-b border-[#d7dee9] bg-[#f8fafc] px-3 py-1.5 text-[10px] font-semibold uppercase text-[#657386] min-[760px]:grid">
+              <span />
+              <span>Continuity item</span>
+              <span>Evidence</span>
+              <span>State</span>
+            </div>
             {tasks.map((task) => (
               <ContinuityLedgerRow key={task.incident_id} task={task} selected={selectedId === task.incident_id} onSelect={() => onSelect(task.incident_id)} />
             ))}
@@ -702,8 +719,8 @@ function ContinuityLedgerRow({ task, selected, onSelect }: { task: ContinuityTas
       data-testid={`continuity-task-${task.incident_id}`}
       aria-pressed={selected}
       onClick={onSelect}
-      className={`grid w-full min-w-0 grid-cols-[32px_1fr] gap-2 overflow-hidden rounded-md border px-2.5 py-2 text-left transition focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 ${
-        selected ? "border-[#1652f0] bg-white shadow-[0_0_0_1px_rgba(22,82,240,0.08)]" : "border-transparent bg-transparent hover:border-[#cfd8e5] hover:bg-white"
+      className={`relay-ledger-row grid w-full min-w-0 grid-cols-[34px_1fr] gap-2 overflow-hidden px-3 py-2.5 text-left transition focus:outline-none focus:ring-2 focus:ring-[#1652f0]/30 min-[760px]:grid-cols-[40px_minmax(0,1.25fr)_minmax(190px,0.85fr)_130px] ${
+        selected ? "relay-ledger-row-selected" : ""
       }`}
     >
       <img src={relayTokens.careDomainIcons[task.careDomain]} alt="" className="size-8 rounded-md" />
@@ -711,16 +728,26 @@ function ContinuityLedgerRow({ task, selected, onSelect }: { task: ContinuityTas
         <div className="flex min-w-0 flex-wrap items-center gap-1.5">
           <h2 className="min-w-0 truncate text-base font-semibold text-[#0a1b3d]">{task.title}</h2>
           <SeverityTag urgency={task.urgency} />
-          <CdsTag tone={task.stateLabel.includes("Unsafe") ? "red" : task.handoffStatus === "Unavailable" ? "yellow" : "green"}>{task.stateLabel}</CdsTag>
         </div>
         <p className="mt-1 line-clamp-2 text-sm leading-5 text-[#536579] min-[1120px]:line-clamp-1">{task.summary}</p>
-        <div className="mt-1.5 flex min-w-0 flex-wrap gap-x-3 gap-y-1 border-t border-[#dfe6ef] pt-1.5 text-xs text-[#536579]">
+        <div className="mt-1.5 flex min-w-0 flex-wrap gap-x-3 gap-y-1 text-xs text-[#536579] min-[760px]:hidden">
           <TaskFact label="Source reports" value={task.sourceLinkLabel} />
           <TaskFact label="Missing fields" value={task.missingLabel} warn={task.missing_information_count > 0} />
           <TaskFact label="Review queue" value={task.candidateQueue} />
           <TaskFact label="Reported timing" value={task.reportedDeadline} />
         </div>
-        {task.unsafeClaims.length > 0 ? <p className="mt-1.5 text-xs font-semibold text-[#c0352b]">{task.unsafeClaims.length} unsafe claim held</p> : null}
+        {task.unsafeClaims.length > 0 ? <p className="mt-1.5 text-xs font-semibold text-[#c0352b] min-[760px]:hidden">{task.unsafeClaims.length} unsafe claim held</p> : null}
+      </div>
+      <div className="hidden min-w-0 flex-col gap-1 text-xs text-[#536579] min-[760px]:flex">
+        <TaskFact label="Sources" value={task.sourceLinkLabel} />
+        <TaskFact label="Fields" value={task.missingLabel} warn={task.missing_information_count > 0} />
+        <TaskFact label="Queue" value={task.candidateQueue} />
+        <TaskFact label="Timing" value={task.reportedDeadline} />
+      </div>
+      <div className="hidden min-w-0 flex-col items-start gap-1.5 min-[760px]:flex">
+        <CdsTag tone={task.stateLabel.includes("Unsafe") ? "red" : task.handoffStatus === "Unavailable" ? "yellow" : "green"}>{task.stateLabel}</CdsTag>
+        <span className={`truncate text-xs font-semibold ${task.handoffStatus === "Unavailable" ? "text-[#9a6700]" : "text-[#247a4d]"}`}>{task.handoffStatus}</span>
+        {task.unsafeClaims.length > 0 ? <span className="truncate text-xs font-semibold text-[#c0352b]">{task.unsafeClaims.length} unsafe claim</span> : null}
       </div>
     </button>
   );
@@ -744,12 +771,11 @@ function ContinuityReview({
   onRun: (type: CommandAction, id?: string) => void;
 }) {
   return (
-    <aside className="relay-panel flex min-h-[420px] min-w-0 flex-col overflow-hidden bg-[#fbfcfe] min-[1120px]:min-h-[520px]">
-      <SectionHeader
+    <aside className="flex min-h-[420px] min-w-0 flex-col overflow-hidden bg-[#fbfcfe] min-[1120px]:min-h-[520px]">
+      <WorkspacePanelHeader
         title="Continuity Review"
         description="Decision dock for the selected ledger item."
         end={<CdsTag tone={incident && incident.missing_information.length === 0 ? "green" : "yellow"}>{incident && incident.missing_information.length === 0 ? "Fields complete" : "Not ready"}</CdsTag>}
-        className="border-b border-[#cfd8e5] px-4 py-3"
       />
 
       <div className="thin-scroll min-h-0 flex-1 overflow-auto p-2.5">
@@ -797,6 +823,24 @@ function ReviewHeader({ incident, task }: { incident: Incident; task: Continuity
         <LedgerStat label="open" value={String(missingCount)} tone={missingCount > 0 ? "yellow" : "green"} />
       </div>
     </section>
+  );
+}
+
+function WorkspaceJumpBar({ reports, items, open }: { reports: number; items: number; open: number }) {
+  const links = [
+    { href: "#relay-ledger", label: "Ledger", value: String(items) },
+    { href: "#relay-reports", label: "Reports", value: String(reports) },
+    { href: "#relay-review", label: "Review", value: open > 0 ? `${open} open` : "clear" },
+  ];
+  return (
+    <nav aria-label="Workspace sections" className="relay-mobile-jump mt-1 grid shrink-0 grid-cols-3 divide-x divide-[#d7dee9] text-xs font-semibold min-[1120px]:hidden">
+      {links.map((link) => (
+        <a key={link.href} href={link.href} className="flex min-h-10 items-center justify-between gap-2 px-3 text-[#0a1b3d] hover:bg-[#f8fafc]">
+          <span>{link.label}</span>
+          <span className={link.href === "#relay-review" && open > 0 ? "text-[#9a6700]" : "text-[#536579]"}>{link.value}</span>
+        </a>
+      ))}
+    </nav>
   );
 }
 
@@ -1111,7 +1155,7 @@ function ReviewActionButton({
 
 function Meta({ label, value, warn, className = "" }: { label: string; value: string; warn?: boolean; className?: string }) {
   return (
-    <span className={`flex min-w-0 items-center gap-1 rounded-lg border border-[#d7dee9] bg-[#f8fafc] px-2 py-1 text-xs min-[760px]:shrink-0 ${className}`}>
+    <span className={`flex min-w-0 items-baseline gap-1 text-xs min-[760px]:shrink-0 ${className}`}>
       <span className="shrink-0 font-semibold text-[#536579]">{label}:</span>
       <span className={`min-w-0 truncate font-semibold ${warn ? "text-[#9a6700]" : "text-[#0a1b3d]"}`}>{value}</span>
     </span>

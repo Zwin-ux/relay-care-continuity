@@ -8,8 +8,10 @@
   --relay-ink: #152033;
   --relay-muted: #5d6878;
   --relay-line: #d2d9e3;
+  --relay-line-strong: #b8c2d1;
   --relay-panel: #ffffff;
   --relay-panel-2: #f7f9fc;
+  --relay-panel-3: #eef2f6;
   --relay-blue: #2454d6;
   --relay-amber: #8a5b00;
   --relay-red: #b42318;
@@ -50,7 +52,92 @@ button, input, textarea {
   border: 1px solid var(--relay-line);
   border-radius: 3px;
   background: var(--relay-panel);
-  box-shadow: 0 1px 2px rgba(21, 32, 51, 0.04);
+  box-shadow: none;
+}
+
+.relay-commandbar {
+  border: 1px solid var(--relay-line-strong);
+  border-radius: 3px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.relay-context-strip {
+  border: 1px solid var(--relay-line);
+  border-radius: 3px;
+  background: #f8fafc;
+  box-shadow: none;
+}
+
+.relay-live-strip {
+  background: #ffffff;
+}
+
+.relay-mobile-jump {
+  border: 1px solid var(--relay-line);
+  border-radius: 3px;
+  background: #ffffff;
+}
+
+.relay-workspace {
+  border: 1px solid var(--relay-line-strong);
+  border-radius: 3px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.relay-workspace-col {
+  min-height: 0;
+  background: #ffffff;
+}
+
+.relay-workspace-col--primary {
+  background: #ffffff;
+}
+
+.relay-section-band {
+  border-bottom: 1px solid var(--relay-line);
+  background: #f8fafc;
+}
+
+.relay-ledger-row {
+  border-bottom: 1px solid var(--relay-line);
+  background: #ffffff;
+}
+
+.relay-ledger-row:hover {
+  background: #f8fafc;
+}
+
+.relay-ledger-row-selected {
+  background: #f2f6ff;
+  box-shadow: inset 3px 0 0 var(--relay-blue);
+}
+
+@media (min-width: 1120px) {
+  .relay-workspace {
+    display: grid;
+  }
+
+  .relay-workspace-col + .relay-workspace-col {
+    border-left: 1px solid var(--relay-line-strong);
+  }
+}
+
+@media (max-width: 1119px) {
+  .relay-workspace {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .relay-workspace-col {
+    border-bottom: 1px solid var(--relay-line-strong);
+    flex: 0 0 auto;
+  }
+
+  .relay-workspace-col:last-child {
+    border-bottom: 0;
+  }
 }
 
 .relay-elevated {
